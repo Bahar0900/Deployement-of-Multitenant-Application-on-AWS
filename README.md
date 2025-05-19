@@ -56,3 +56,23 @@ A scalable multi-tenant application demonstrating distributed PostgreSQL (Citus)
   └───**pycache**
           config.cpython-39.pyc
 ```
+
+## 🛠️ Installation
+
+### Prerequisites
+- Docker 20.10+
+- Docker Compose 1.29+
+- Python 3.9+
+
+### Setup
+```bash
+# Clone repository
+git clone https://github.com/your-repo/flask-citus-app.git
+cd flask-citus-app
+
+# Build and start containers
+docker-compose up -d
+
+# Initialize database (after containers are up)
+docker-compose exec web python init_db.py
+```
