@@ -76,7 +76,9 @@ docker-compose up -d
 # Initialize database (after containers are up)
 docker-compose exec web python init_db.py
 ```
-### Schema 
+##  Database Architecture
+
+### Schema Diagram
 <img src="https://github.com/Bahar0900/MultiTenant-Application-with-Flask-and-Citus/blob/7d6351f9d5111082dd764f5b124b6e5fac649477/images/schema_Diagram.drawio.png?raw=true" alt="Schema Diagram" width="600" /> 
 *Figure 1: Visual representation of our schema diagram*
 
