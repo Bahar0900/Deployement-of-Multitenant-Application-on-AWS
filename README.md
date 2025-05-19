@@ -81,8 +81,8 @@ docker-compose exec web python init_db.py
 *Figure 1: Visual representation of our schema diagram*
 
 ### Sharding Strategy
-![Sharding Diagram](./docs/images/sharding_diagram.png)  
+![Sharding Diagram](https://github.com/Bahar0900/MultiTenant-Application-with-Flask-and-Citus/blob/fbf28c4219c481460b2c33b7f48ee8f8f3c404cc/images/sharding_strategy.png)  
 *Figure 2: Visual representation of our sharding distribution strategy*
 
 #### Table Distribution
-![Table Diagram](./docs/images/sharding_diagram.png)  
+![Table Diagram](https://github.com/Bahar0900/MultiTenant-Application-with-Flask-and-Citus/blob/fbf28c4219c481460b2c33b7f48ee8f8f3c404cc/images/Capture.JPG)  
