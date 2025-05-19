@@ -76,3 +76,13 @@ docker-compose up -d
 # Initialize database (after containers are up)
 docker-compose exec web python init_db.py
 ```
+### Schema 
+![Schema Diagram](./docs/images/sharding_diagram.png)  
+*Figure 1: Visual representation of our schema diagram*
+
+### Sharding Strategy
+![Sharding Diagram](./docs/images/sharding_diagram.png)  
+*Figure 2: Visual representation of our sharding distribution strategy*
+
+#### Table Distribution
+![Table Diagram](./docs/images/sharding_diagram.png)  
