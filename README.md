@@ -77,7 +77,7 @@ docker-compose up -d
 docker-compose exec web python init_db.py
 ```
 ### Schema 
-![Schema Diagram](./docs/images/sharding_diagram.png](https://github.com/Bahar0900/MultiTenant-Application-with-Flask-and-Citus/blob/7d6351f9d5111082dd764f5b124b6e5fac649477/images/schema_Diagram.drawio.png)  
+![Schema Diagram](https://github.com/Bahar0900/MultiTenant-Application-with-Flask-and-Citus/blob/7d6351f9d5111082dd764f5b124b6e5fac649477/images/schema_Diagram.drawio.png)  
 *Figure 1: Visual representation of our schema diagram*
 
 ### Sharding Strategy
