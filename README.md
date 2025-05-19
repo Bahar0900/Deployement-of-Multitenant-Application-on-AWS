@@ -54,5 +54,5 @@ A scalable multi-tenant application demonstrating distributed PostgreSQL (Citus)
   │       init.sql
   │
   └───**pycache**
-  config.cpython-39.pyc
+          config.cpython-39.pyc
 ```
