@@ -86,5 +86,17 @@ docker-compose exec web python init_db.py
 <img src="https://github.com/Bahar0900/MultiTenant-Application-with-Flask-and-Citus/blob/fbf28c4219c481460b2c33b7f48ee8f8f3c404cc/images/sharding_strategy.png" alt="Schema Diagram" width="600" height="400"/> 
 *Figure 2: Visual representation of our sharding distribution strategy*
 
-#### Table Distribution
+
+### Table Distribution
 ![Table Diagram](https://github.com/Bahar0900/MultiTenant-Application-with-Flask-and-Citus/blob/fbf28c4219c481460b2c33b7f48ee8f8f3c404cc/images/Capture.JPG)  
+*Figure 3: Reference and shard key table*
+
+## 🌐 System Architecture
+
+**System Diagram**
+<img src="https://github.com/Bahar0900/MultiTenant-Application-with-Flask-and-Citus/blob/fbf28c4219c481460b2c33b7f48ee8f8f3c404cc/images/sharding_strategy.png" alt="Schema Diagram" width="600" height="400"/>
+*Figure 4: Visual representation of our system architecture*
+
+- **Web Layer**: Flask application (stateless)
+- **Data Layer**: Citus cluster (1 coordinator + N workers)
+- **Isolation**: Tenant separation via sharding key
