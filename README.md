@@ -93,8 +93,8 @@ docker-compose exec web python init_db.py
 
 ## 🌐 System Architecture
 
-**System Diagram**
-<img src="https://github.com/Bahar0900/MultiTenant-Application-with-Flask-and-Citus/blob/fbf28c4219c481460b2c33b7f48ee8f8f3c404cc/images/sharding_strategy.png" alt="Schema Diagram" width="600" height="400"/>
+### System Diagram
+<img src="https://github.com/Bahar0900/MultiTenant-Application-with-Flask-and-Citus/blob/46f1babb921d39c11d9432bf975f07320ef963d8/images/systemarchitecture.JPG" alt="Schema Diagram" width="600" height="400"/>
 *Figure 4: Visual representation of our system architecture*
 
 - **Web Layer**: Flask application (stateless)
