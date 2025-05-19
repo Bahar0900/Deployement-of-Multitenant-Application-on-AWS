@@ -134,3 +134,28 @@ docker-compose exec web python init_db.py
 - **Web Layer**: Flask application (stateless)
 - **Data Layer**: Citus cluster (1 coordinator + N workers)
 - **Isolation**: Tenant separation via sharding key
+## Contributing
+
+- Submit issues or pull requests via [GitHub Issues](https://github.com/Bahar0900/MultiTenant-Application-with-Flask-and-Citus/issues).
+- Follow **PEP 8** guidelines for Python code style.
+- Ensure all existing and new tests pass before submitting.
+- Add new tests under the `tests/` directory *(to be implemented)*.
+
+## License
+
+This project is licensed under the **MIT License**.  
+See the [LICENSE](./LICENSE) file for details.
+
+## Contact
+
+For any issues, suggestions, or questions, please contact the maintainers via:
+
+- GitHub: [Bahar0900](https://github.com/Bahar0900)
+- Email: `sagormdsagorchowdhury@example.com`
+
+## Acknowledgments
+
+- **Flask** – for the lightweight web framework  
+- **Citus** – for distributed PostgreSQL support  
+- **SQLAlchemy** – for seamless ORM integration  
+- **Docker** – for containerized development and deployment
