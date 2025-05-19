@@ -85,7 +85,7 @@ docker-compose exec web python init_db.py
 ### Sharding Strategy
 <img src="https://github.com/Bahar0900/MultiTenant-Application-with-Flask-and-Citus/blob/fbf28c4219c481460b2c33b7f48ee8f8f3c404cc/images/sharding_strategy.png" alt="Schema Diagram" width="600" height="400"/> 
 *Figure 2: Visual representation of our sharding distribution strategy*
-
+- **Hashing Strategy**: Citus employs(by default) a hash-based sharding strategy for distributed tables (`users`, `notes`). The sharding key (`tenant_id` for `users`, `user_id` for `notes`) is hashed using a consistent hashing algorithm to assign data to shards, which are distributed across the Citus cluster’s worker nodes. This ensures even data distribution and scalability. The `notes` table is colocated with `users` on the same shards for efficient joins, while `tenants` is replicated across all nodes as a reference table.
 
 ### Table Distribution
 ![Table Diagram](https://github.com/Bahar0900/MultiTenant-Application-with-Flask-and-Citus/blob/fbf28c4219c481460b2c33b7f48ee8f8f3c404cc/images/Capture.JPG)  
