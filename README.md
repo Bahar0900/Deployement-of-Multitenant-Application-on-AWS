@@ -91,6 +91,40 @@ docker-compose exec web python init_db.py
 ![Table Diagram](https://github.com/Bahar0900/MultiTenant-Application-with-Flask-and-Citus/blob/fbf28c4219c481460b2c33b7f48ee8f8f3c404cc/images/Capture.JPG)  
 *Figure 3: Reference and shard key table*
 
+#### shared.tenants (Reference Table)
+- **Columns**:
+  - `id`: Primary key
+  - `name`: Unique identifier
+  - `created_at`: Timestamp
+- **Type**: Reference table (replicated to all nodes)
+- **Purpose**: Central repository for tenant metadata
+
+#### shared.users (Distributed Table)
+- **Columns**:
+  - `id`: User identifier
+  - `tenant_id`: Composite primary key component
+  - `username`: Unique within tenant
+  - `email`: Unique within tenant  
+  - `password`: Encrypted credential
+  - `created_at`: Timestamp
+- **Type**: Distributed (sharded by tenant_id)
+- **Constraints**:
+  - Unique username per tenant
+  - Unique email per tenant
+  - References shared.tenants.id
+- **Purpose**: Tenant-isolated user storage
+
+#### notes (Colocated Table)
+- **Columns**:
+  - `id`: Primary key
+  - `content`: Note text
+  - `user_id`: References shared.users.id
+  - `created_at`: Timestamp
+  - `updated_at`: Modification timestamp
+- **Type**: Distributed (sharded by user_id)
+- **Colocation**: Physically grouped with user data
+- **Purpose**: User-generated content storage
+
 ## 🌐 System Architecture
 
 ### System Diagram
