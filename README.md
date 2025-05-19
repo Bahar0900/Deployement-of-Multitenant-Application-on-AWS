@@ -19,7 +19,7 @@ A scalable multi-tenant application demonstrating distributed PostgreSQL (Citus)
   - Docker containerization
 
 ## 📂 Project Structure
-  .flaskenv
+ ``` .flaskenv
   │   config.py
   │   docker-compose.yml
   │   Dockerfile
@@ -55,3 +55,4 @@ A scalable multi-tenant application demonstrating distributed PostgreSQL (Citus)
   │
   └───**pycache**
   config.cpython-39.pyc
+```
