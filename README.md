@@ -67,14 +67,12 @@ A scalable multi-tenant application demonstrating distributed PostgreSQL (Citus)
 ### Setup
 ```bash
 # Clone repository
-git clone https://github.com/your-repo/flask-citus-app.git
+git clone [https://github.com/your-repo/flask-citus-app.git](https://github.com/Bahar0900/MultiTenant-Application-with-Flask-and-Citus.git)
 cd flask-citus-app
 
 # Build and start containers
 docker-compose up -d
 
-# Initialize database (after containers are up)
-docker-compose exec web python init_db.py
 ```
 ##  Database Architecture
 
@@ -135,6 +133,124 @@ docker-compose exec web python init_db.py
 - **Web Layer**: Flask application (stateless)
 - **Data Layer**: Citus cluster (1 coordinator + N workers)
 - **Isolation**: Tenant separation via sharding key
+
+## 🚀 Citus Monitoring Guide with Docker Access
+
+This guide explains how to monitor your **Citus database cluster** from within Docker containers. We'll start by accessing the relevant Docker container, then run SQL queries to track shard activity and performance.
+
+---
+
+### 🐳 Step 1: View Running Docker Containers
+
+List all running containers:
+
+```bash
+docker ps
+```
+
+---
+
+### 📦 Step 2: Access the Citus Master Container
+
+Identify the container name for your **Citus master**, then enter its shell:
+
+```bash
+docker exec -it <container_name> bash
+```
+
+Replace `<container_name>` with your actual container ID or name (e.g., `citus_master`).
+
+---
+
+### 🐘 Step 3: Connect to PostgreSQL Inside Container
+
+Run the following command inside the container to access PostgreSQL:
+
+```bash
+psql -U postgres -d your_database_name
+```
+
+Replace `your_database_name` with your actual database name.
+
+---
+
+### 📡 Step 4: Monitor Shard Activity & Cluster Health
+
+Once inside PostgreSQL, use the following SQL commands:
+
+---
+
+### 🔍 1. List Distributed Tables
+
+```sql
+SELECT * FROM citus_tables;
+```
+
+---
+
+### 📊 2. View Shard Placements
+
+See shard distribution across the cluster:
+
+```sql
+SELECT * FROM pg_dist_shard;
+```
+
+Check where shards are placed:
+
+```sql
+SELECT * FROM pg_dist_placement;
+```
+
+---
+
+### 📦 3. Get Shard Sizes
+
+```sql
+SELECT * FROM citus_stat_shards;
+```
+
+---
+
+### 🔁 4. Monitor Active Queries
+
+```sql
+SELECT * FROM pg_stat_activity WHERE datname = 'your_database_name';
+```
+
+---
+
+### 🔗 5. Check Worker Node Status
+
+```sql
+SELECT * FROM pg_dist_node;
+```
+
+---
+
+### 🧠 6. Colocation & Distribution Strategy
+
+```sql
+SELECT logicalrelid, colocationid, distribution_column 
+FROM pg_dist_partition;
+```
+
+---
+
+### 📈 7. Track Query Performance (Optional)
+
+Enable `pg_stat_statements` to view slow or heavy queries:
+
+```sql
+SELECT query, calls, total_time, rows 
+FROM pg_stat_statements 
+ORDER BY total_time DESC 
+LIMIT 10;
+```
+
+
+
+
 ## Contributing
 
 - Submit issues or pull requests via [GitHub Issues](https://github.com/Bahar0900/MultiTenant-Application-with-Flask-and-Citus/issues).
