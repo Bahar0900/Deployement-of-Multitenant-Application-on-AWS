@@ -1,0 +1,71 @@
+version: '3.8'
+
+services:
+  citus-master:
+    image: citusdata/citus:11.2
+    environment:
+      POSTGRES_PASSWORD: mysecretpassword
+      POSTGRES_HOST_AUTH_METHOD: trust
+    ports:
+      - "5432:5432"
+    volumes:
+      - citus-data:/var/lib/postgresql/data
+      - ./docker-entrypoint-initdb.d:/docker-entrypoint-initdb.d
+    networks:
+      - citus-network
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U postgres && psql -U postgres -c 'SELECT 1 FROM citus_check_cluster_node_health()'"]
+      interval: 5s
+      timeout: 5s
+      retries: 10
+
+  citus-worker:
+    image: citusdata/citus:11.2
+    environment:
+      POSTGRES_PASSWORD: mysecretpassword
+    depends_on:
+      citus-master:
+        condition: service_healthy
+    volumes:
+      - citus-data:/var/lib/postgresql/data
+    networks:
+      - citus-network
+    command: >
+      bash -c "
+      echo 'Waiting for citus-master to be ready...'
+      while ! PGPASSWORD=mysecretpassword pg_isready -h citus-master -p 5432 -U postgres; do sleep 2; done
+      echo 'Setting up worker node...'
+      PGPASSWORD=mysecretpassword psql -h citus-master -U postgres -c \"SELECT * FROM master_add_node('citus-worker', 5432);\"
+      sleep infinity
+      "
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U postgres"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  web:
+    build: .
+    ports:
+      - "5000:5000"
+    depends_on:
+      citus-master:
+        condition: service_healthy
+    environment:
+      FLASK_ENV: development
+      DATABASE_URL: postgresql://postgres:mysecretpassword@citus-master:5432/postgres
+      POSTGRES_PASSWORD: mysecretpassword
+    volumes:
+      - .:/app
+    networks:
+      - citus-network
+    command: >
+      bash -c "
+        ./wait-for-db.sh citus-master flask run --host 0.0.0.0 --port 5000
+      "
+
+networks:
+  citus-network:
+
+volumes:
+  citus-data:
