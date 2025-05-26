@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+```<!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
@@ -310,3 +310,4 @@ docker-compose up -d</code></pre>
     </ul>
 </body>
 </html>
+```
