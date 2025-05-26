@@ -23,7 +23,6 @@ A scalable, secure multi-tenant application leveraging Flask and Citus (distribu
 
 ## Multi-Tenancy Overview
 
-<img src="https://github.com/Bahar0900/MultiTenant-Application-with-Flask-and-Citus/blob/7d6351f9d5111082dd764f5b124b6e5fac649477/images/schema_Diagram.drawio.png?raw=true" alt="Schema Diagram">
 
 This application provides a robust multi-tenant architecture with secure data isolation using Citus' sharding capabilities. Key features include:
 
@@ -36,7 +35,7 @@ This application provides a robust multi-tenant architecture with secure data is
 
 ### Schema Overview
 
-<img src="https://github.com/Bahar0900/MultiTenant-Application-with-Flask-and-Citus/blob/fbf28c4219c481460b2c33b7f48ee8f8f3c404cc/images/Capture.JPG" alt="Table Diagram">
+<img src="https://github.com/Bahar0900/MultiTenant-Application-with-Flask-and-Citus/blob/7d6351f9d5111082dd764f5b124b6e5fac649477/images/schema_Diagram.drawio.png?raw=true" alt="Schema Diagram">
 
 The database consists of three main tables:
 
