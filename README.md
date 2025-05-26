@@ -34,7 +34,7 @@ This application provides a robust multi-tenant architecture with secure data is
 
 ## System Architecture
 
-<img src="https://github.com/Bahar0900/MultiTenant-Application-with-Flask-and-Citus/blob/46f1babb921d39c11d9432bf975f07320ef963d8/images/systemarchitecture.JPG" alt="System Architecture">
+<img src="https://github.com/poridhioss/MultiTenant-Application-with-Flask-and-Citus/blob/46688126d3447d6765abc48f8c177e2663c0868a/images/sysetmarchitecture.svg">
 
 ### Components
 
