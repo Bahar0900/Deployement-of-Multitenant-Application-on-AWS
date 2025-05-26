@@ -56,26 +56,26 @@ This application provides a robust multi-tenant architecture with secure data is
 
 1. **Clone the Repository**:
 
-    ``bash
+    ```bash
     git clone https://github.com/Bahar0900/MultiTenant-Application-with-Flask-and-Citus.git
     cd MultiTenant-Application-with-Flask-and-Citus
-    ``
+    ```
 
 2. **Configure Environment Variables**:
 
     Create a `.env` file in the project root:
 
-    ``properties
+    ```properties
     DATABASE_URL=postgresql://postgres:password@citus_master:5432/your_database_name
     FLASK_ENV=development
     SECRET_KEY=your-secure-flask-key
-    ``
+    ```
 
 3. **Start Docker Containers**:
 
-    ``bash
+    ```bash
     docker-compose up -d
-    ``
+    ```
 
 4. **Initialize Database Schema**:
 
@@ -133,22 +133,22 @@ Follow these guidelines for contributing to the project:
 
 - **Database Connection Issues**:
 
-    ``bash
+    ```bash
     docker-compose exec citus_master psql -U postgres -d your_database_name -c "SELECT 1"
-    ``
+    ```
 
 - **Check Container Logs**:
 
-    ``bash
+    ```bash
     docker-compose logs citus_master
-    ``
+    ```
 
 - **Reset Containers and Data**:
 
-    ``bash
+    ```bash
     docker-compose down -v
     docker-compose up -d
-    ``
+    ```
 
 ## Citus Monitoring Guide with Docker Access
 
@@ -158,17 +158,17 @@ This guide explains how to monitor your **Citus database cluster** from within D
 
 List all running containers:
 
-``bash
+```bash
 docker ps
-``
+```
 
 ### 📦 Step 2: Access the Citus Master Container
 
 Identify the container name for your **Citus master**, then enter its shell:
 
-``bash
+```bash
 docker exec -it <container_name> bash
-``
+```
 
 Replace `<container_name>` with your actual container ID or name (e.g., `citus_master`).
 
@@ -176,9 +176,9 @@ Replace `<container_name>` with your actual container ID or name (e.g., `citus_m
 
 Run the following command inside the container to access PostgreSQL:
 
-``bash
+```bash
 psql -U postgres -d your_database_name
-``
+```
 
 Replace `your_database_name` with your actual database name.
 
@@ -188,59 +188,59 @@ Once inside PostgreSQL, use the following SQL commands:
 
 - **🔍 1. List Distributed Tables**
 
-    ``sql
+    ```sql
     SELECT * FROM citus_tables;
-    ``
+    ```
 
 - **📊 2. View Shard Placements**
 
     See shard distribution across the cluster:
 
-    ``sql
+    ```sql
     SELECT * FROM pg_dist_shard;
-    ``
+    ```
 
     Check where shards are placed:
 
-    ``sql
+    ```sql
     SELECT * FROM pg_dist_placement;
-    ``
+    ```
 
 - **📦 3. Get Shard Sizes**
 
-    ``sql
+    ```sql
     SELECT * FROM citus_stat_shards;
-    ``
+    ```
 
 - **🔁 4. Monitor Active Queries**
 
-    ``sql
+    ```sql
     SELECT * FROM pg_stat_activity WHERE datname = 'your_database_name';
-    ``
+    ```
 
 - **🔗 5. Check Worker Node Status**
 
-    ``sql
+    ```sql
     SELECT * FROM pg_dist_node;
-    ``
+    ```
 
 - **🧠 6. Colocation & Distribution Strategy**
 
-    ``sql
+    ```sql
     SELECT logicalrelid, colocationid, distribution_column 
     FROM pg_dist_partition;
-    ``
+    ```
 
 - **📈 7. Track Query Performance (Optional)**
 
     Enable `pg_stat_statements` to view slow or heavy queries:
 
-    ``sql
+    ```sql
     SELECT query, calls, total_time, rows 
     FROM pg_stat_statements 
     ORDER BY total_time DESC 
     LIMIT 10;
-    ``
+    ```
 
 ## Contributing
 
@@ -257,7 +257,7 @@ MIT License. See the [LICENSE](./LICENSE) file for details.
 ## Contact
 
 - GitHub: [Bahar0900](https://github.com/Bahar0900)
-- Email: `sagormdsagorchowdhury@example.com`
+- Email: `sagormdsagorchowdhury@gmail.com`
 
 ## Acknowledgments
 
