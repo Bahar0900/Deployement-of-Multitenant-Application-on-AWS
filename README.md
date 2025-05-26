@@ -106,7 +106,7 @@ The database consists of three main tables:
 
 ### Sharding Strategy
 
-<img src="https://github.com/poridhioss/MultiTenant-Application-with-Flask-and-Citus/blob/42581ae744685afd4a6c75ff86235272933f18d1/images/shardingstrategy.svg">
+<img src="https://github.com/poridhioss/MultiTenant-Application-with-Flask-and-Citus/blob/42581ae744685afd4a6c75ff86235272933f18d1/images/shardingstrategy.svg" height='700' width='700'>
 
 - **Hash-Based Sharding**: Uses `tenant_id` (for `users`) and `user_id` (for `notes`) as distribution keys
 - **Colocation**: `notes` table is colocated with `users` for efficient joins
