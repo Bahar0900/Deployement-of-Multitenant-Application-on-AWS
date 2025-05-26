@@ -1,152 +1,267 @@
-<h1>Multi-Tenant Application with Flask and Citus</h1>
-<p>A scalable, secure multi-tenant application leveraging Flask and Citus (distributed PostgreSQL) for efficient tenant isolation, sharding, and horizontal scaling.</p>
+# Multi-Tenant Application with Flask and Citus
 
-<h2>Table of Contents</h2>
-<ul>
-    <li><a href="#multi-tenancy-overview">Multi-Tenancy Overview</a></li>
-    <li><a href="#system-architecture">System Architecture</a></li>
-    <li><a href="#getting-started">Getting Started</a>
-        <ul>
-            <li><a href="#prerequisites">Prerequisites</a></li>
-            <li><a href="#setup-instructions">Setup Instructions</a></li>
-        </ul>
-    </li>
-    <li><a href="#database-design">Database Design</a>
-        <ul>
-            <li><a href="#schema-overview">Schema Overview</a></li>
-            <li><a href="#sharding-strategy">Sharding Strategy</a></li>
-        </ul>
-    </li>
-    <li><a href="#citus-monitoring">Citus Monitoring Guide with Docker Access</a></li>
-    <li><a href="#api-endpoints">API Endpoints</a></li>
-    <li><a href="#development-guide">Development Guide</a></li>
-    <li><a href="#troubleshooting">Troubleshooting</a></li>
-    <li><a href="#contributing">Contributing</a></li>
-    <li><a href="#license">License</a></li>
-    <li><a href="#contact">Contact</a></li>
-    <li><a href="#acknowledgments">Acknowledgments</a></li>
-</ul>
+A scalable, secure multi-tenant application leveraging Flask and Citus (distributed PostgreSQL) for efficient tenant isolation, sharding, and horizontal scaling.
 
-<h2 id="multi-tenancy-overview">Multi-Tenancy Overview</h2>
+## Table of Contents
+
+- [Multi-Tenancy Overview](#multi-tenancy-overview)
+- [System Architecture](#system-architecture)
+- [Getting Started](#getting-started)
+  - [Prerequisites](#prerequisites)
+  - [Setup Instructions](#setup-instructions)
+- [Database Design](#database-design)
+  - [Schema Overview](#schema-overview)
+  - [Sharding Strategy](#sharding-strategy)
+- [API Endpoints](#api-endpoints)
+- [Development Guide](#development-guide)
+- [Troubleshooting](#troubleshooting)
+- [Citus Monitoring Guide with Docker Access](#citus-monitoring-guide-with-docker-access)
+- [Contributing](#contributing)
+- [License](#license)
+- [Contact](#contact)
+- [Acknowledgments](#acknowledgments)
+
+## Multi-Tenancy Overview
+
 <img src="https://github.com/Bahar0900/MultiTenant-Application-with-Flask-and-Citus/blob/7d6351f9d5111082dd764f5b124b6e5fac649477/images/schema_Diagram.drawio.png?raw=true" alt="Schema Diagram">
-<ul>
-    <li><strong>Tenant Isolation</strong>: Data separation via <code>tenant_id</code> sharding key</li>
-    <li><strong>Horizontal Scaling</strong>: Citus distributes data across worker nodes</li>
-    <li><strong>Colocation</strong>: Optimized joins for <code>users</code> and <code>notes</code> tables</li>
-    <li><strong>Security</strong>: Encrypted credentials and tenant-specific constraints</li>
-</ul>
 
-<h2 id="system-architecture">System Architecture</h2>
+This application provides a robust multi-tenant architecture with secure data isolation using Citus' sharding capabilities. Key features include:
+
+- **Tenant Isolation**: Data separation via `tenant_id` sharding key
+- **Horizontal Scaling**: Citus distributes data across worker nodes
+- **Colocation**: Optimized joins for `users` and `notes` tables
+- **Security**: Encrypted credentials and tenant-specific constraints
+
+## System Architecture
+
 <img src="https://github.com/Bahar0900/MultiTenant-Application-with-Flask-and-Citus/blob/46f1babb921d39c11d9432bf975f07320ef963d8/images/systemarchitecture.JPG" alt="System Architecture">
-<h3>Components</h3>
-<ul>
-    <li><strong>Flask Application</strong>: Stateless REST API for tenant and user management</li>
-    <li><strong>Citus Cluster</strong>: Distributed PostgreSQL with one coordinator and multiple worker nodes</li>
-    <li><strong>Docker</strong>: Containerized environment for consistent deployment</li>
-    <li><strong>SQLAlchemy</strong>: ORM with Citus extensions for seamless database interactions</li>
-</ul>
 
-<h2 id="getting-started">Getting Started</h2>
-<h3 id="prerequisites">Prerequisites</h3>
-<ul>
-    <li>Docker 20.10+</li>
-    <li>Docker Compose 1.29+</li>
-    <li>Python 3.9+</li>
-    <li>Git</li>
-</ul>
+### Components
 
-<h3 id="setup-instructions">Setup Instructions</h3>
-<ol>
-    <li><strong>Clone the Repository</strong>:
-        <pre><code>git clone https://github.com/Bahar0900/MultiTenant-Application-with-Flask-and-Citus.git
-cd MultiTenant-Application-with-Flask-and-Citus</code></pre>
-    </li>
-    <li><strong>Configure Environment Variables</strong>:
-        <p>Create a <code>.env</code> file in the project root:</p>
-        <pre><code>DATABASE_URL=postgresql://postgres:password@citus_master:5432/your_database_name
-FLASK_ENV=development
-SECRET_KEY=your-secure-flask-key</code></pre>
-    </li>
-    <li><strong>Start Docker Containers</strong>:
-        <pre><code>docker-compose up -d</code></pre>
-    </li>
-    <li><strong>Initialize Database Schema</strong>:
-        <p>The <code>docker-entrypoint-initdb.d/init.sql</code> script automatically sets up the schema on container startup.</p>
-    </li>
-    <li><strong>Verify Services</strong>:
-        <ul>
-            <li>Flask API: <a href="http://localhost:5000">http://localhost:5000</a></li>
-            <li>Citus cluster health: See <a href="#citus-monitoring">Citus Monitoring Guide</a></li>
-        </ul>
-    </li>
-</ol>
+- **Flask Application**: Stateless REST API for tenant and user management
+- **Citus Cluster**: Distributed PostgreSQL with one coordinator and multiple worker nodes
+- **Docker**: Containerized environment for consistent deployment
+- **SQLAlchemy**: ORM with Citus extensions for seamless database interactions
 
-<h2 id="database-design">Database Design</h2>
-<h3 id="schema-overview">Schema Overview</h3>
+## Getting Started
+
+### Prerequisites
+
+- Docker 20.10+
+- Docker Compose 1.29+
+- Python 3.9+
+- Git
+
+### Setup Instructions
+
+1. **Clone the Repository**:
+
+    ``bash
+    git clone https://github.com/Bahar0900/MultiTenant-Application-with-Flask-and-Citus.git
+    cd MultiTenant-Application-with-Flask-and-Citus
+    ``
+
+2. **Configure Environment Variables**:
+
+    Create a `.env` file in the project root:
+
+    ``properties
+    DATABASE_URL=postgresql://postgres:password@citus_master:5432/your_database_name
+    FLASK_ENV=development
+    SECRET_KEY=your-secure-flask-key
+    ``
+
+3. **Start Docker Containers**:
+
+    ``bash
+    docker-compose up -d
+    ``
+
+4. **Initialize Database Schema**:
+
+    The `docker-entrypoint-initdb.d/init.sql` script automatically sets up the schema on container startup.
+
+5. **Verify Services**:
+
+    - Flask API: [http://localhost:5000](http://localhost:5000)
+    - Citus cluster health: See [Citus Monitoring Guide](#citus-monitoring-guide-with-docker-access)
+
+## Database Design
+
+### Schema Overview
+
 <img src="https://github.com/Bahar0900/MultiTenant-Application-with-Flask-and-Citus/blob/fbf28c4219c481460b2c33b7f48ee8f8f3c404cc/images/Capture.JPG" alt="Table Diagram">
-<ul>
-    <li><strong>shared.tenants</strong> (Reference Table)</li>
-    <li><strong>shared.users</strong> (Distributed Table)</li>
-    <li><strong>notes</strong> (Distributed Table)</li>
-</ul>
 
-<h3 id="sharding-strategy">Sharding Strategy</h3>
+The database consists of three main tables:
+
+- **shared.tenants** (Reference Table):
+  - Columns: `id`, `name`, `created_at`
+  - Replicated across all nodes for fast access
+- **shared.users** (Distributed Table):
+  - Columns: `id`, `tenant_id`, `username`, `email`, `password`, `created_at`
+  - Sharded by `tenant_id` with unique constraints per tenant
+- **notes** (Distributed Table):
+  - Columns: `id`, `content`, `user_id`, `created_at`, `updated_at`
+  - Sharded by `user_id`, colocated with `users`
+
+### Sharding Strategy
+
 <img src="https://github.com/Bahar0900/MultiTenant-Application-with-Flask-and-Citus/blob/fbf28c4219c481460b2c33b7f48ee8f8f3c404cc/images/sharding_strategy.png" alt="Sharding Strategy">
-<ul>
-    <li><strong>Hash-Based Sharding</strong></li>
-    <li><strong>Colocation</strong></li>
-    <li><strong>Reference Tables</strong></li>
-</ul>
 
-<h2 id="citus-monitoring">Citus Monitoring Guide with Docker Access</h2>
-<p>Run the following commands to monitor the Citus cluster:</p>
-<pre><code>docker exec -it citus_master psql -U postgres -d your_database_name</code></pre>
-<pre><code>SELECT * FROM citus_tables;</code></pre>
-<pre><code>SELECT * FROM pg_dist_node;</code></pre>
-<pre><code>SELECT * FROM pg_stat_activity;</code></pre>
+- **Hash-Based Sharding**: Uses `tenant_id` (for `users`) and `user_id` (for `notes`) as distribution keys
+- **Colocation**: `notes` table is colocated with `users` for efficient joins
+- **Reference Tables**: `tenants` table is replicated across all nodes
 
-<h2 id="api-endpoints">API Endpoints</h2>
-<ul>
-    <li><code>POST /tenants</code> - Create a new tenant</li>
-    <li><code>POST /users</code> - Create a user under a tenant</li>
-    <li><code>POST /notes</code> - Add note for a user</li>
-    <li><code>GET /notes?user_id=</code> - Fetch notes by user</li>
-</ul>
+## API Endpoints
 
-<h2 id="development-guide">Development Guide</h2>
-<ul>
-    <li>Use <code>.env</code> for local config</li>
-    <li>Check Docker logs via <code>docker-compose logs -f</code></li>
-    <li>Lint code with <code>flake8</code></li>
-    <li>Test with <code>pytest</code></li>
-</ul>
+| Method | Endpoint         | Description                           |
+|--------|------------------|---------------------------------------|
+| POST   | `/api/register`  | Register a new tenant or user         |
+| POST   | `/api/login`     | Authenticate user and return session  |
+| GET    | `/api/notes`     | Retrieve notes for authenticated user |
+| POST   | `/api/notes`     | Create a new note for authenticated user |
 
-<h2 id="troubleshooting">Troubleshooting</h2>
-<ul>
-    <li>If Citus nodes don't connect, verify network setup in <code>docker-compose.yml</code></li>
-    <li>Ensure database initialization via logs</li>
-    <li>Use <code>pg_isready</code> to check DB readiness</li>
-</ul>
+## Development Guide
 
-<h2 id="contributing">Contributing</h2>
-<ul>
-    <li>Fork this repo</li>
-    <li>Create your feature branch (<code>git checkout -b feature/foo</code>)</li>
-    <li>Commit your changes (<code>git commit -am 'Add foo'</code>)</li>
-    <li>Push to the branch (<code>git push origin feature/foo</code>)</li>
-    <li>Create a new Pull Request</li>
-</ul>
+Follow these guidelines for contributing to the project:
 
-<h2 id="license">License</h2>
-<p>This project is licensed under the MIT License - see the <a href="LICENSE">LICENSE</a> file for details.</p>
+- Adhere to **PEP 8** for Python code style
+- Write tests under the `tests/` directory (to be implemented)
+- Run existing tests before submitting changes
 
-<h2 id="contact">Contact</h2>
-<p>Created by <a href="https://github.com/Bahar0900">Bahar0900</a> - feel free to reach out!</p>
+## Troubleshooting
 
-<h2 id="acknowledgments">Acknowledgments</h2>
-<ul>
-    <li><a href="https://docs.citusdata.com">Citus Documentation</a></li>
-    <li><a href="https://flask.palletsprojects.com/">Flask</a></li>
-    <li><a href="https://www.postgresql.org/">PostgreSQL</a></li>
-    <li><a href="https://www.docker.com/">Docker</a></li>
-</ul>
+- **Database Connection Issues**:
+
+    ``bash
+    docker-compose exec citus_master psql -U postgres -d your_database_name -c "SELECT 1"
+    ``
+
+- **Check Container Logs**:
+
+    ``bash
+    docker-compose logs citus_master
+    ``
+
+- **Reset Containers and Data**:
+
+    ``bash
+    docker-compose down -v
+    docker-compose up -d
+    ``
+
+## Citus Monitoring Guide with Docker Access
+
+This guide explains how to monitor your **Citus database cluster** from within Docker containers. We'll start by accessing the relevant Docker container, then run SQL queries to track shard activity and performance.
+
+### 🐳 Step 1: View Running Docker Containers
+
+List all running containers:
+
+``bash
+docker ps
+``
+
+### 📦 Step 2: Access the Citus Master Container
+
+Identify the container name for your **Citus master**, then enter its shell:
+
+``bash
+docker exec -it <container_name> bash
+``
+
+Replace `<container_name>` with your actual container ID or name (e.g., `citus_master`).
+
+### 🐘 Step 3: Connect to PostgreSQL Inside Container
+
+Run the following command inside the container to access PostgreSQL:
+
+``bash
+psql -U postgres -d your_database_name
+``
+
+Replace `your_database_name` with your actual database name.
+
+### 📡 Step 4: Monitor Shard Activity & Cluster Health
+
+Once inside PostgreSQL, use the following SQL commands:
+
+- **🔍 1. List Distributed Tables**
+
+    ``sql
+    SELECT * FROM citus_tables;
+    ``
+
+- **📊 2. View Shard Placements**
+
+    See shard distribution across the cluster:
+
+    ``sql
+    SELECT * FROM pg_dist_shard;
+    ``
+
+    Check where shards are placed:
+
+    ``sql
+    SELECT * FROM pg_dist_placement;
+    ``
+
+- **📦 3. Get Shard Sizes**
+
+    ``sql
+    SELECT * FROM citus_stat_shards;
+    ``
+
+- **🔁 4. Monitor Active Queries**
+
+    ``sql
+    SELECT * FROM pg_stat_activity WHERE datname = 'your_database_name';
+    ``
+
+- **🔗 5. Check Worker Node Status**
+
+    ``sql
+    SELECT * FROM pg_dist_node;
+    ``
+
+- **🧠 6. Colocation & Distribution Strategy**
+
+    ``sql
+    SELECT logicalrelid, colocationid, distribution_column 
+    FROM pg_dist_partition;
+    ``
+
+- **📈 7. Track Query Performance (Optional)**
+
+    Enable `pg_stat_statements` to view slow or heavy queries:
+
+    ``sql
+    SELECT query, calls, total_time, rows 
+    FROM pg_stat_statements 
+    ORDER BY total_time DESC 
+    LIMIT 10;
+    ``
+
+## Contributing
+
+Contributions are welcome! Please:
+
+- Submit issues or pull requests via [GitHub Issues](https://github.com/Bahar0900/MultiTenant-Application-with-Flask-and-Citus/issues)
+- Follow **PEP 8** guidelines
+- Ensure all tests pass
+
+## License
+
+MIT License. See the [LICENSE](./LICENSE) file for details.
+
+## Contact
+
+- GitHub: [Bahar0900](https://github.com/Bahar0900)
+- Email: `sagormdsagorchowdhury@example.com`
+
+## Acknowledgments
+
+- **Flask**: Lightweight web framework
+- **Citus**: Distributed PostgreSQL extension
+- **SQLAlchemy**: ORM for database interactions
+- **Docker**: Containerization platform
