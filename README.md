@@ -5,18 +5,18 @@ A scalable, secure multi-tenant application leveraging Flask and Citus (distribu
 ## Table of Contents
 
 - [Multi-Tenancy Overview](#multi-tenancy-overview)
+- [Database Design](#database-design)
+  - [Schema Overview](#schema-overview)
+  - [Sharding Strategy](#sharding-strategy)
 - [System Architecture](#system-architecture)
 - [Getting Started](#getting-started)
   - [Prerequisites](#prerequisites)
   - [Setup Instructions](#setup-instructions)
-- [Database Design](#database-design)
-  - [Schema Overview](#schema-overview)
-  - [Sharding Strategy](#sharding-strategy)
 - [API Endpoints](#api-endpoints)
-- [Development Guide](#development-guide)
 - [Troubleshooting](#troubleshooting)
 - [Citus Monitoring Guide with Docker Access](#citus-monitoring-guide-with-docker-access)
 - [Contributing](#contributing)
+- [Development Guide](#development-guide)
 - [License](#license)
 - [Contact](#contact)
 - [Acknowledgments](#acknowledgments)
@@ -31,6 +31,32 @@ This application provides a robust multi-tenant architecture with secure data is
 - **Horizontal Scaling**: Citus distributes data across worker nodes
 - **Colocation**: Optimized joins for `users` and `notes` tables
 - **Security**: Encrypted credentials and tenant-specific constraints
+
+## Database Design
+
+### Schema Overview
+
+<img src="https://github.com/Bahar0900/MultiTenant-Application-with-Flask-and-Citus/blob/fbf28c4219c481460b2c33b7f48ee8f8f3c404cc/images/Capture.JPG" alt="Table Diagram">
+
+The database consists of three main tables:
+
+- **shared.tenants** (Reference Table):
+  - Columns: `id`, `name`, `created_at`
+  - Replicated across all nodes for fast access
+- **shared.users** (Distributed Table):
+  - Columns: `id`, `tenant_id`, `username`, `email`, `password`, `created_at`
+  - Sharded by `tenant_id` with unique constraints per tenant
+- **notes** (Distributed Table):
+  - Columns: `id`, `content`, `user_id`, `created_at`, `updated_at`
+  - Sharded by `user_id`, colocated with `users`
+
+### Sharding Strategy
+
+<img src="https://github.com/poridhioss/MultiTenant-Application-with-Flask-and-Citus/blob/42581ae744685afd4a6c75ff86235272933f18d1/images/shardingstrategy.svg" height='700' width='700'>
+
+- **Hash-Based Sharding**: Uses `tenant_id` (for `users`) and `user_id` (for `notes`) as distribution keys
+- **Colocation**: `notes` table is colocated with `users` for efficient joins
+- **Reference Tables**: `tenants` table is replicated across all nodes
 
 ## System Architecture
 
@@ -86,31 +112,6 @@ This application provides a robust multi-tenant architecture with secure data is
     - Flask API: [http://localhost:5000](http://localhost:5000)
     - Citus cluster health: See [Citus Monitoring Guide](#citus-monitoring-guide-with-docker-access)
 
-## Database Design
-
-### Schema Overview
-
-<img src="https://github.com/Bahar0900/MultiTenant-Application-with-Flask-and-Citus/blob/fbf28c4219c481460b2c33b7f48ee8f8f3c404cc/images/Capture.JPG" alt="Table Diagram">
-
-The database consists of three main tables:
-
-- **shared.tenants** (Reference Table):
-  - Columns: `id`, `name`, `created_at`
-  - Replicated across all nodes for fast access
-- **shared.users** (Distributed Table):
-  - Columns: `id`, `tenant_id`, `username`, `email`, `password`, `created_at`
-  - Sharded by `tenant_id` with unique constraints per tenant
-- **notes** (Distributed Table):
-  - Columns: `id`, `content`, `user_id`, `created_at`, `updated_at`
-  - Sharded by `user_id`, colocated with `users`
-
-### Sharding Strategy
-
-<img src="https://github.com/poridhioss/MultiTenant-Application-with-Flask-and-Citus/blob/42581ae744685afd4a6c75ff86235272933f18d1/images/shardingstrategy.svg" height='700' width='700'>
-
-- **Hash-Based Sharding**: Uses `tenant_id` (for `users`) and `user_id` (for `notes`) as distribution keys
-- **Colocation**: `notes` table is colocated with `users` for efficient joins
-- **Reference Tables**: `tenants` table is replicated across all nodes
 
 ## API Endpoints
 
@@ -121,13 +122,6 @@ The database consists of three main tables:
 | GET    | `/api/notes`     | Retrieve notes for authenticated user |
 | POST   | `/api/notes`     | Create a new note for authenticated user |
 
-## Development Guide
-
-Follow these guidelines for contributing to the project:
-
-- Adhere to **PEP 8** for Python code style
-- Write tests under the `tests/` directory (to be implemented)
-- Run existing tests before submitting changes
 
 ## Troubleshooting
 
@@ -249,6 +243,13 @@ Contributions are welcome! Please:
 - Submit issues or pull requests via [GitHub Issues](https://github.com/Bahar0900/MultiTenant-Application-with-Flask-and-Citus/issues)
 - Follow **PEP 8** guidelines
 - Ensure all tests pass
+
+## Development Guide
+
+Follow these guidelines for contributing to the project:
+
+- Adhere to **PEP 8** for Python code style
+- Run existing programs before submitting changes
 
 ## License
 
