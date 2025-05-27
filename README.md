@@ -59,7 +59,7 @@ The database consists of three main tables:
 
 ## System Architecture
 ### Web App workflow
-<img src="https://github.com/poridhioss/MultiTenant-Application-with-Flask-and-Citus/blob/42581ae744685afd4a6c75ff86235272933f18d1/images/shardingstrategy.svg" height='700' width='700'>
+<img src="https://github.com/poridhioss/MultiTenant-Application-with-Flask-and-Citus/blob/f3469419da650db07fd38e63153da013a94c58cb/images/completesystem.drawio.svg" >
 
 - The client browser sends a **Request** to the Web Server.
 - The Web Server forwards the **Request for Page Generation** to the Application Server.
