@@ -91,7 +91,7 @@ The database consists of three main tables:
   - The Flask App finalizes the request by returning a **JSON** response to the client, indicating the note has been created (`note_created`).
 
 ### Deployment layer workflow
-<img src="https://github.com/poridhioss/MultiTenant-Application-with-Flask-and-Citus/blob/42581ae744685afd4a6c75ff86235272933f18d1/images/shardingstrategy.svg" height='700' width='700'>
+<img src="https://github.com/poridhioss/MultiTenant-Application-with-Flask-and-Citus/blob/9984a80c0cf7b017b51366f2e5d33538deecf860/images/docker.drawio.svg">
 
 - The process begins with a browser sending an **http://localhost:5000** request to access the web application hosted on the Host Machine.
 - The Host Machine runs a **Docker Service**, which is responsible for containerizing and managing the application's components.
