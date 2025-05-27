@@ -158,9 +158,9 @@ docker-compose --version
 
    Launch the Citus cluster, Flask application, and worker services using Docker Compose:
 
-   ``bash
+   ```bash
    docker-compose up -d
-   ``
+   ```
 
    This command starts:
    - `citus_master`: The Citus coordinator node.
