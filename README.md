@@ -51,7 +51,7 @@ The database consists of three main tables:
 
 ### Sharding Strategy
 
-<img src="https://github.com/poridhioss/MultiTenant-Application-with-Flask-and-Citus/blob/42581ae744685afd4a6c75ff86235272933f18d1/images/shardingstrategy.svg" height='700' width='700'>
+<img src="https://github.com/poridhioss/MultiTenant-Application-with-Flask-and-Citus/blob/42581ae744685afd4a6c75ff86235272933f18d1/images/shardingstrategy.svg" height='500' width='500'>
 
 - **Hash-Based Sharding**: Uses `tenant_id` (for `users`) and `user_id` (for `notes`) as distribution keys
 - **Colocation**: `notes` table is colocated with `users` for efficient joins
@@ -68,7 +68,7 @@ The database consists of three main tables:
 - The Web Server sends the **Response** (containing the dynamically generated page) to the client browser.
 
 ### Application Layer Workflow
-<img src="https://github.com/poridhioss/MultiTenant-Application-with-Flask-and-Citus/blob/42581ae744685afd4a6c75ff86235272933f18d1/images/shardingstrategy.svg" height='700' width='700'>
+<img src="https://github.com/poridhioss/MultiTenant-Application-with-Flask-and-Citus/blob/1b01446f3c9f228d32efec17e7b0253e42cbc0d5/images/flaskserver.drawio%20(1).svg">
 
   - The Flask Server receives a **Request** from the Web Browser, typically an HTTP request (e.g., GET or POST) initiated by a user action like accessing a URL or submitting a form.
   - The request is routed to the appropriate handler using **routes.py**, which defines URL routes and maps them to specific functions (e.g., mapping `/home` to a homepage function).
