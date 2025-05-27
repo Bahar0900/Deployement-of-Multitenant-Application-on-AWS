@@ -58,16 +58,53 @@ The database consists of three main tables:
 - **Reference Tables**: `tenants` table is replicated across all nodes
 
 ## System Architecture
+### Web App workflow
+<img src="https://github.com/poridhioss/MultiTenant-Application-with-Flask-and-Citus/blob/42581ae744685afd4a6c75ff86235272933f18d1/images/shardingstrategy.svg" height='700' width='700'>
 
-<img src="https://github.com/poridhioss/MultiTenant-Application-with-Flask-and-Citus/blob/f71fb14ab6ef149fb4d911910f51adb55b715073/images/system_architecture.svg">
+- The client browser sends a **Request** to the Web Server.
+- The Web Server forwards the **Request for Page Generation** to the Application Server.
+- The Application Server processes the request and generates a **Dynamically Generated Page**.
+- The **Dynamically Generated Page** is sent back to the Web Server.
+- The Web Server sends the **Response** (containing the dynamically generated page) to the client browser.
 
-### Components
+### Application Layer Workflow
+<img src="https://github.com/poridhioss/MultiTenant-Application-with-Flask-and-Citus/blob/42581ae744685afd4a6c75ff86235272933f18d1/images/shardingstrategy.svg" height='700' width='700'>
 
-- **Flask Application**: Stateless REST API for tenant and user management
-- **Citus Cluster**: Distributed PostgreSQL with one coordinator and multiple worker nodes
-- **Docker**: Containerized environment for consistent deployment
-- **SQLAlchemy**: ORM with Citus extensions for seamless database interactions
+  - The Flask Server receives a **Request** from the Web Browser, typically an HTTP request (e.g., GET or POST) initiated by a user action like accessing a URL or submitting a form.
+  - The request is routed to the appropriate handler using **routes.py**, which defines URL routes and maps them to specific functions (e.g., mapping `/home` to a homepage function).
+  - The mapped **Functions** (written in Python) are executed, performing tasks such as:
+    - Processing user inputs (e.g., form data).
+    - Executing application logic or computations.
+    - Preparing data for rendering or further processing.
+  - If a webpage needs to be rendered, the function uses **Templates** (HTML files with embedded Python code via a templating engine like Jinja2). The function passes data to the template, which is rendered into a dynamic webpage.
+  - If a redirect is required (e.g., after form submission), the function uses **Redirects** to send the browser to a new route.
+  - The Flask Server sends the rendered webpage or redirect response back to the Web Browser for display.
+  
+### Database layer workflow
+<img src="https://github.com/poridhioss/MultiTenant-Application-with-Flask-and-Citus/blob/42581ae744685afd4a6c75ff86235272933f18d1/images/shardingstrategy.svg" height='700' width='700'>
 
+  - The client sends an **HTTP POST** request to the Flask App (running on port `web:5000`) with the endpoint `/api/notes` and a payload containing the note content (`content`) and user ID (`userid`).
+  - The Flask App processes the request and sends an **SQL INSERT** statement to the database (Citrus-master5432) to insert the note into the `notes` table with the provided `content` and `userid`.
+  - The database (Citrus-master5432) executes the SQL INSERT operation, stores the note, and returns a **Query Result** containing the `note_id` of the newly created note to the Flask App.
+  - Simultaneously, the Flask App sends a message to the Citrus-worker via a message broker (e.g., RabbitMQ or Redis) with the route `insert_to_shared` and the payload containing the `note_id` and `userid`.
+  - The Citrus-worker processes the message, performs any additional tasks (e.g., sharing the note with other users or systems), and sends an **Acknowledgement** back to the Flask App to confirm the operation.
+  - The Flask App finalizes the request by returning a **JSON** response to the client, indicating the note has been created (`note_created`).
+
+### Deployment layer workflow
+<img src="https://github.com/poridhioss/MultiTenant-Application-with-Flask-and-Citus/blob/42581ae744685afd4a6c75ff86235272933f18d1/images/shardingstrategy.svg" height='700' width='700'>
+
+- The process begins with a browser sending an **http://localhost:5000** request to access the web application hosted on the Host Machine.
+- The Host Machine runs a **Docker Service**, which is responsible for containerizing and managing the application's components.
+- Docker deploys the **Frontend** (represented by `webapp`), which receives the HTTP request. The Frontend's role is to handle the user interface and client-side logic.
+- The Frontend initiates an **API call** to the **Backend**, which is also containerized within Docker. This call requests data or operations to be performed.
+- The Backend, deployed as a separate container, processes the API call by performing **API Operations**. It interacts with a **DB** (database) to handle **Data Operations**, such as retrieving or storing data.
+- The Backend sends an **API response** back to the Frontend with the requested data or operation result.
+- The Frontend then generates a **response** and sends it back to the browser, completing the request cycle.
+- Docker's role is critical as it:
+  - Provides containerization, ensuring the Frontend and Backend run in isolated environments with their dependencies.
+  - Simplifies deployment by packaging the application and its environment into portable containers.
+  - Enables scalability and consistency across different Host Machines by managing these containers efficiently.
+    
 ## Getting Started
 
 ### Prerequisites
