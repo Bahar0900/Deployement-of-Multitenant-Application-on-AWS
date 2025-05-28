@@ -9,17 +9,22 @@ A scalable, secure multi-tenant application leveraging Flask and Citus (distribu
   - [Schema Overview](#schema-overview)
   - [Sharding Strategy](#sharding-strategy)
 - [System Architecture](#system-architecture)
+  - [Web App Workflow](#web-app-workflow)
+  - [Application layer workflow](#application-layer-workflow)
+  - [Database layer workflow](#database-layer-workflow)
+  - [Deployment layer workflow](#deployment-layer-workflow)
 - [Getting Started](#getting-started)
   - [Prerequisites](#prerequisites)
   - [Setup Instructions](#setup-instructions)
 - [API Endpoints](#api-endpoints)
-- [Troubleshooting](#troubleshooting)
 - [Citus Monitoring Guide with Docker Access](#citus-monitoring-guide-with-docker-access)
+- [Troubleshooting](#troubleshooting)
 - [Contributing](#contributing)
 - [Development Guide](#development-guide)
 - [License](#license)
 - [Contact](#contact)
 - [Acknowledgments](#acknowledgments)
+
 
 ## Multi-Tenancy Overview
 
@@ -123,271 +128,253 @@ docker --version
 docker-compose --version
 ```
 
-### Setup Instructions
+# 🛠 Setup Instructions
 
-1. **Clone the Repository**:
+## 📥 1. Clone the Repository
 
-   Clone the project repository and navigate into the project directory:
+First, clone the project and navigate into the directory:
 
-   ```bash
-   git clone https://github.com/poridhioss/MultiTenant-Application-with-Flask-and-Citus.git
-   cd MultiTenant-Application-with-Flask-and-Citus
-   ```
+```bash
+git clone https://github.com/poridhioss/MultiTenant-Application-with-Flask-and-Citus.git
+cd MultiTenant-Application-with-Flask-and-Citus
+```
 
-2. **Configure Environment Variables**:
+## 🐳 2. Start Docker Containers
 
-   Create a `.env` file in the project root to configure the application and database settings:
+Launch the Flask application and the Citus cluster using Docker Compose:
 
-   ```bash
-   touch .env
-   ```
+```bash
+docker-compose up --build
+```
 
-   Add the following environment variables to the `.env` file:
-
-   ```properties
-   DATABASE_URL=postgresql://postgres:password@citus_master:5432/tenant_db
-   FLASK_ENV=development
-   SECRET_KEY=your-secure-flask-key
-   ```
-
-   - `DATABASE_URL`: Connection string for the Citus database (adjust `password` and `tenant_db` as needed).
-   - `FLASK_ENV`: Set to `development` for debugging; use `production` in a live environment.
-   - `SECRET_KEY`: A secure key for Flask session management (generate a random string).
-
-3. **Start Docker Containers**:
-
-   Launch the Citus cluster, Flask application, and worker services using Docker Compose:
-
-   ```bash
-   docker-compose up -d
-   ```
-
-   This command starts:
-   - `citus_master`: The Citus coordinator node.
-   - `citus_worker`: Worker nodes for distributed data storage.
-   - `web`: The Flask application running on port 5000.
-
-4. **Initialize Database Schema**:
-
-   The repository includes a `docker-entrypoint-initdb.d/init.sql` script that automatically sets up the schema and Citus distribution on container startup. This script:
-   - Creates the `tenant_db` database.
-   - Sets up tables (e.g., `notes`) with a `tenant_id` column for multi-tenancy.
-   - Distributes tables across the Citus cluster using `create_distributed_table`.
-
-   To manually verify the schema, connect to the Citus master node:
-
-   ```bash
-   docker-compose exec citus_master psql -U postgres -d tenant_db -c "\dt"
-   ```
-
-   This lists the tables in the `tenant_db` database. You should see tables like `notes` with a `tenant_id` column.
-
-5. **Set Up Citus Worker Nodes**:
-
-   The Citus cluster requires worker nodes to be registered with the master node. The `docker-compose.yml` file likely includes a script to handle this, but you can manually verify or add workers:
-
-   ```bash
-   docker-compose exec citus_master psql -U postgres -d tenant_db -c "SELECT * FROM master_add_node('citus_worker', 5432);"
-   ```
-
-   This ensures the worker node is added to the Citus cluster for data distribution.
-
-6. **Verify Services**:
-
-   Check that all services are running correctly:
-   - **Flask API**: Access the Flask application at [http://localhost:5000](http://localhost:5000). You should see a welcome message or the application's homepage.
-   - **Citus Cluster Health**: Verify the Citus cluster by checking the node status:
-
-   ```bash
-   docker-compose exec citus_master psql -U postgres -d tenant_db -c "SELECT * FROM citus_get_active_worker_nodes();"
-   ```
-
-   This should list the active worker nodes in the Citus cluster.
-
-7. **Test API Endpoints with curl**:
-
-   Use `curl` to test the API endpoints and ensure the application is functioning as expected.
-
-   - **Register a new tenant or user**:
-
-   ```bash
-   curl -X POST http://localhost:5000/api/register \
-   -H "Content-Type: application/json" \
-   -d '{"username": "testuser", "password": "testpass", "tenant_id": 1}'
-   ```
-
-   Expected response: A JSON object with the user ID and a success message, e.g., `{"user_id": 1, "message": "User registered successfully"}`.
-
-   - **Login to authenticate a user**:
-
-   ```bash
-   curl -X POST http://localhost:5000/api/login \
-   -H "Content-Type: application/json" \
-   -d '{"username": "testuser", "password": "testpass"}'
-   ```
-
-   Expected response: A JSON object with a session token, e.g., `{"token": "your-session-token"}`. Save this token for authenticated requests.
-
-   - **Create a new note for the authenticated user**:
-
-   ```bash
-   curl -X POST http://localhost:5000/api/notes \
-   -H "Content-Type: application/json" \
-   -H "Authorization: Bearer your-session-token" \
-   -d '{"content": "This is a test note", "tenant_id": 1}'
-   ```
-
-   Expected response: A JSON object with the note ID, e.g., `{"note_id": 1, "message": "Note created successfully"}`.
-
-   - **Retrieve notes for the authenticated user**:
-
-   ```bash
-   curl -X GET http://localhost:5000/api/notes \
-   -H "Authorization: Bearer your-session-token"
-   ```
-
-   Expected response: A JSON array of notes, e.g., `[{"note_id": 1, "content": "This is a test note", "tenant_id": 1}]`.
-
-## API Endpoints
-
-| Method | Endpoint         | Description                           |
-|--------|------------------|---------------------------------------|
-| POST   | `/api/register`  | Register a new tenant or user         |
-| POST   | `/api/login`     | Authenticate user and return session  |
-| GET    | `/api/notes`     | Retrieve notes for authenticated user |
-| POST   | `/api/notes`     | Create a new note for authenticated user |
-
-## Troubleshooting
-
-- **Database Connection Issues**:
-
-   Test the database connection to ensure the Citus master node is accessible:
-
-   ```bash
-   docker-compose exec citus_master psql -U postgres -d tenant_db -c "SELECT 1"
-   ```
-
-   If this fails, check the database logs or ensure the `DATABASE_URL` in the `.env` file is correct.
-
-- **Check Container Logs**:
-
-   View logs for debugging issues with specific services:
-
-   ```bash
-   docker-compose logs citus_master
-   docker-compose logs web
-   ```
-
-- **Reset Containers and Data**:
-
-   If something goes wrong, reset the containers and volumes to start fresh:
-
-   ```bash
-   docker-compose down -v
-   docker-compose up -d
-   ```
-
-- **Verify Citus Distribution**:
-
-   Ensure tables are properly distributed across the Citus cluster:
-
-   ```bash
-   docker-compose exec citus_master psql -U postgres -d tenant_db -c "SELECT * FROM citus_tables;"
-   ```
-
-   This lists distributed tables and their properties.
-
-## Citus Monitoring Guide with Docker Access
-
-This guide explains how to monitor your **Citus database cluster** from within Docker containers. We'll start by accessing the relevant Docker container, then run SQL queries to track shard activity and performance.
-
-### 🐳 Step 1: View Running Docker Containers
-
-List all running containers:
+Check running containers:
 
 ```bash
 docker ps
 ```
 
-### 📦 Step 2: Access the Citus Master Container
+**Expected:** You should see two containers running:
+- `flask-citus-app-web-1`
+- `flask-citus-app-citus-master-1`
 
-Identify the container name for your **Citus master**, then enter its shell:
+## ✅ 3. Verify Services
 
-```bash
-docker exec -it <container_name> bash
-```
+- **Flask App:** Visit [http://localhost:5000](http://localhost:5000) in your browser.
+- **Citus Cluster Health:**
 
-Replace `<container_name>` with your actual container ID or name (e.g., `citus_master`).
-
-### 🐘 Step 3: Connect to PostgreSQL Inside Container
-
-Run the following command inside the container to access PostgreSQL:
+Run this to see active worker nodes:
 
 ```bash
-psql -U postgres -d your_database_name
+docker-compose exec citus_master psql -U postgres -d tenant_db -c "SELECT * FROM citus_get_active_worker_nodes();"
 ```
 
-Replace `your_database_name` with your actual database name.
+---
 
-### 📡 Step 4: Monitor Shard Activity & Cluster Health
+## 🔬 4. Test API Endpoints with `curl`
 
-Once inside PostgreSQL, use the following SQL commands:
+### 🔐 Register a New User
 
-- **🔍 1. List Distributed Tables**
+```bash
+curl -X POST http://localhost:5000/register \
+  -H "Content-Type: application/x-www-form-urlencoded" \
+  -d "username=newuser&email=newuser@example.com&password=Password123&tenant_name=NewOrg"
+```
 
-    ```sql
-    SELECT * FROM citus_tables;
-    ```
+**Expected:** HTML page with "Redirecting to login".
 
-- **📊 2. View Shard Placements**
+---
 
-    See shard distribution across the cluster:
+### 🔑 Login User
 
-    ```sql
-    SELECT * FROM pg_dist_shard;
-    ```
+```bash
+curl -X POST http://localhost:5000/login \
+  -H "Content-Type: application/x-www-form-urlencoded" \
+  -c cookies.txt \
+  -d "email=newuser@example.com&password=Password123"
+```
 
-    Check where shards are placed:
+**Expected:** HTML redirect to dashboard.
 
-    ```sql
-    SELECT * FROM pg_dist_placement;
-    ```
+---
 
-- **📦 3. Get Shard Sizes**
+### 📝 Create Note
 
-    ```sql
-    SELECT * FROM citus_stat_shards;
-    ```
+```bash
+curl -X POST http://localhost:5000/notes \
+  -H "Content-Type: application/x-www-form-urlencoded" \
+  -b cookies.txt \
+  -d "content=This is my first note"
+```
 
-- **🔁 4. Monitor Active Queries**
+**Expected:** HTML with confirmation and notes list.
 
-    ```sql
-    SELECT * FROM pg_stat_activity WHERE datname = 'your_database_name';
-    ```
+---
 
-- **🔗 5. Check Worker Node Status**
+### 📄 Retrieve Notes
 
-    ```sql
-    SELECT * FROM pg_dist_node;
-    ```
+```bash
+curl -X GET http://localhost:5000/notes -b cookies.txt
+```
 
-- **🧠 6. Colocation & Distribution Strategy**
+**Expected:** HTML page showing list of notes.
 
-    ```sql
-    SELECT logicalrelid, colocationid, distribution_column 
-    FROM pg_dist_partition;
-    ```
+---
 
-- **📈 7. Track Query Performance (Optional)**
+### 🚪 Logout
 
-    Enable `pg_stat_statements` to view slow or heavy queries:
+```bash
+curl -b cookies.txt http://localhost:5000/logout
+```
 
-    ```sql
-    SELECT query, calls, total_time, rows 
-    FROM pg_stat_statements 
-    ORDER BY total_time DESC 
-    LIMIT 10;
-    ```
+**Expected:** HTML redirect to homepage (`/`).
+
+---
+
+## 🔌 API Endpoints Summary
+
+| Method | Endpoint       | Description                           |
+|--------|----------------|---------------------------------------|
+| POST   | /register  | Register a new tenant or user         |
+| POST   | /login     | Authenticate user and begin session   |
+| GET    | /notes     | Fetch notes for the logged-in user    |
+| POST   | /notes     | Create a note for the current user    |
+
+
+---
+
+# 📈 Citus Monitoring Guide (Docker-Based)
+
+## 🐳 Step 1: List Running Containers
+
+```bash
+docker ps
+```
+
+**Expected:** See containers like:
+- `flask-citus-app-web-1`
+- `flask-citus-app-citus-master-1`
+
+---
+
+## 📦 Step 2: Enter the Citus Master Container
+
+```bash
+docker exec -it flask-citus-app-citus-master-1 bash
+```
+
+---
+
+## 🐘 Step 3: Access PostgreSQL
+
+```bash
+psql -U postgres
+```
+
+### List databases:
+
+```sql
+\l
+```
+
+### Connect to the desired database (likely `postgres`):
+
+```sql
+\c postgres
+```
+
+**Expected:** Confirmation that you're connected.
+
+### List schemas:
+
+```sql
+/dn
+```
+
+### List shared tables:
+
+```sql
+\dt shared.*
+```
+
+### View tenant data:
+
+```sql
+SELECT * FROM shared.tenants;
+```
+
+**Expected:** Shows tenant name, e.g., `NewOrg`.
+
+### View users:
+
+```sql
+SELECT * FROM shared.users;
+```
+
+**Expected:** Shows user info (e.g., `newuser@example.com`).
+
+### View notes:
+
+```sql
+SELECT * FROM public.notes;
+```
+
+**Expected:** Shows all user notes.
+
+---
+
+## 📡 Step 4: Monitor Cluster & Shard Health
+
+### 🗂 List Distributed Tables
+
+```sql
+SELECT * FROM citus_tables;
+```
+
+### 📦 View Shard Placements
+
+```sql
+SELECT * FROM pg_dist_shard;
+```
+
+**Example Output:**
+
+| Table        | Shard ID | ... | Min Value      | Max Value      |
+|--------------|----------|-----|----------------|----------------|
+| shared.users | 102009   | ... | -2147483648    | -2013265921    |
+
+This means records with shard key in this range go to shard `102009`.
+
+### 🔁 Monitor Active Queries
+
+```sql
+SELECT * FROM pg_stat_activity WHERE datname = 'your_database_name';
+```
+
+---
+
+## 🧰 Troubleshooting
+
+### 🔍 Test DB Connection
+
+```bash
+docker-compose exec citus_master psql -U postgres -d tenant_db -c "SELECT 1"
+```
+
+If this fails, check logs or verify `DATABASE_URL` in `.env`.
+
+### 📜 View Logs
+
+```bash
+docker-compose logs citus_master
+docker-compose logs web
+```
+
+### ♻️ Reset Docker Containers & Data
+
+```bash
+docker-compose down -v
+docker-compose up -d
+```
 
 ## Contributing
 
