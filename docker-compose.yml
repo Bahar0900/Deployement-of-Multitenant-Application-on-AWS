@@ -84,4 +84,8 @@ networks:
 
 volumes:
   citus-master-data:
+<<<<<<< HEAD
   citus-worker-data:
+=======
+  citus-worker-data:
+>>>>>>> c7284e6809bf2ac7c77af3f8031212de59303e6d
