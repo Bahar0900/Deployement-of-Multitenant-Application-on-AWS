@@ -30,14 +30,13 @@ services:
       - citus-data:/var/lib/postgresql/data
     networks:
       - citus-network
-    command: >
-      bash -c "
-      echo 'Waiting for citus-master to be ready...'
-      while ! PGPASSWORD=mysecretpassword pg_isready -h citus-master -p 5432 -U postgres; do sleep 2; done
-      echo 'Setting up worker node...'
-      PGPASSWORD=mysecretpassword psql -h citus-master -U postgres -c \"SELECT * FROM master_add_node('citus-worker', 5432);\"
-      sleep infinity
-      "
+    command: |
+      bash -c "echo 'Waiting for citus-master to be ready...' && \
+              while ! PGPASSWORD=mysecretpassword pg_isready -h citus-master -p 5432 -U postgres; do sleep 2; done && \
+              echo 'Setting up worker node...' && \
+              PGPASSWORD=mysecretpassword psql -h citus-master -U postgres -c \"SELECT * FROM master_add_node('citus-worker', 5432);\" && \
+              sleep infinity"
+
     healthcheck:
       test: ["CMD-SHELL", "pg_isready -U postgres"]
       interval: 10s
@@ -60,9 +59,8 @@ services:
     networks:
       - citus-network
     command: >
-      bash -c "
-        ./wait-for-db.sh citus-master flask run --host 0.0.0.0 --port 5000
-      "
+      bash -c "/wait-for-db.sh citus-master && flask run --host 0.0.0.0 --port 5000"
+
 
 networks:
   citus-network:
