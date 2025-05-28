@@ -6,10 +6,17 @@ host="$1"
 shift
 cmd="$@"
 
-until PGPASSWORD=$POSTGRES_PASSWORD psql -h "$host" -U "postgres" -c '\q'; do
-  >&2 echo "PostgreSQL is unavailable - sleeping"
+# Wait for Docker DNS to resolve host
+until getent hosts "$host" > /dev/null; do
+  echo "DNS for $host not available yet..."
   sleep 1
 done
 
->&2 echo "PostgreSQL is up - executing command"
+# Wait for Postgres to be ready
+until PGPASSWORD=$POSTGRES_PASSWORD psql -h "$host" -U "postgres" -c '\q' 2>/dev/null; do
+  echo "PostgreSQL is unavailable at $host - sleeping"
+  sleep 1
+done
+
+echo "PostgreSQL is up at $host - executing command"
 exec $cmd
