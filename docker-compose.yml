@@ -9,8 +9,12 @@ services:
     ports:
       - "5432:5432"
     volumes:
-      - citus-data:/var/lib/postgresql/data
-      - ./docker-entrypoint-initdb.d:/docker-entrypoint-initdb.d
+      - ./config/postgresql.conf:/etc/postgresql/postgresql.conf
+      - ./config/pg_hba.conf:/etc/postgresql/pg_hba.conf
+      - citus-master-data:/var/lib/postgresql/data
+      - ./master-init:/docker-entrypoint-initdb.d
+    command: >
+      postgres -c config_file=/etc/postgresql/postgresql.conf
     networks:
       - citus-network
     healthcheck:
@@ -23,25 +27,38 @@ services:
     image: citusdata/citus:11.2
     environment:
       POSTGRES_PASSWORD: mysecretpassword
+      POSTGRES_HOST_AUTH_METHOD: trust
     depends_on:
       citus-master:
         condition: service_healthy
     volumes:
-      - citus-data:/var/lib/postgresql/data
+      - ./config/postgresql.conf:/etc/postgresql/postgresql.conf
+      - ./config/pg_hba.conf:/etc/postgresql/pg_hba.conf
+      - citus-worker-data:/var/lib/postgresql/data
+      - ./worker-init:/docker-entrypoint-initdb.d
     networks:
       - citus-network
-    command: |
-      bash -c "echo 'Waiting for citus-master to be ready...' && \
-              while ! PGPASSWORD=mysecretpassword pg_isready -h citus-master -p 5432 -U postgres; do sleep 2; done && \
-              echo 'Setting up worker node...' && \
-              PGPASSWORD=mysecretpassword psql -h citus-master -U postgres -c \"SELECT * FROM master_add_node('citus-worker', 5432);\" && \
-              sleep infinity"
-
+    command: >
+      postgres -c config_file=/etc/postgresql/postgresql.conf
     healthcheck:
       test: ["CMD-SHELL", "pg_isready -U postgres"]
       interval: 10s
       timeout: 5s
       retries: 5
+  cluster-init:
+    image: citusdata/citus:11.2
+    depends_on:
+      citus-master:
+        condition: service_healthy
+      citus-worker:
+        condition: service_healthy
+    entrypoint: ["/docker-entrypoint-initdb.d/init-cluster.sh"]
+    environment:
+      POSTGRES_PASSWORD: mysecretpassword
+    networks:
+      - citus-network
+    volumes:
+      - ./init-cluster.sh:/docker-entrypoint-initdb.d/init-cluster.sh
 
   web:
     build: .
@@ -66,4 +83,5 @@ networks:
   citus-network:
 
 volumes:
-  citus-data:
+  citus-master-data:
+  citus-worker-data:
