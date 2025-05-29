@@ -6,6 +6,7 @@ services:
     environment:
       POSTGRES_PASSWORD: mysecretpassword
       POSTGRES_HOST_AUTH_METHOD: trust
+      PGSSLMODE: disable
     ports:
       - "5432:5432"
     volumes:
@@ -14,12 +15,15 @@ services:
       - citus-master-data:/var/lib/postgresql/data
       - ./master-init:/docker-entrypoint-initdb.d
     command: >
-      postgres -c config_file=/etc/postgresql/postgresql.conf
+      postgres 
+      -c config_file=/etc/postgresql/postgresql.conf
+      -c ssl=off
+      -c shared_preload_libraries=citus
     networks:
       - citus-network
     healthcheck:
-      test: ["CMD-SHELL", "pg_isready -U postgres && psql -U postgres -c 'SELECT 1 FROM citus_check_cluster_node_health()'"]
-      interval: 5s
+      test: ["CMD-SHELL", "pg_isready -U postgres"]
+      interval: 10s
       timeout: 5s
       retries: 10
 
@@ -28,6 +32,7 @@ services:
     environment:
       POSTGRES_PASSWORD: mysecretpassword
       POSTGRES_HOST_AUTH_METHOD: trust
+      PGSSLMODE: disable
     depends_on:
       citus-master:
         condition: service_healthy
@@ -39,7 +44,10 @@ services:
     networks:
       - citus-network
     command: >
-      postgres -c config_file=/etc/postgresql/postgresql.conf
+      postgres 
+      -c config_file=/etc/postgresql/postgresql.conf
+      -c ssl=off
+      -c shared_preload_libraries=citus
     healthcheck:
       test: ["CMD-SHELL", "pg_isready -U postgres"]
       interval: 10s
@@ -56,6 +64,10 @@ services:
     entrypoint: ["/docker-entrypoint-initdb.d/init-cluster.sh"]
     environment:
       POSTGRES_PASSWORD: mysecretpassword
+      PGHOST: citus-master
+      PGUSER: postgres
+      PGPASSWORD: mysecretpassword
+      PGSSLMODE: disable
     networks:
       - citus-network
     volumes:
@@ -70,7 +82,7 @@ services:
         condition: service_healthy
     environment:
       FLASK_ENV: development
-      DATABASE_URL: postgresql://postgres:mysecretpassword@citus-master:5432/postgres
+      DATABASE_URL: postgresql://postgres:mysecretpassword@citus-master:5432/postgres?sslmode=disable
       POSTGRES_PASSWORD: mysecretpassword
     volumes:
       - .:/app
