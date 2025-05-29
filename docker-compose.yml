@@ -45,6 +45,7 @@ services:
       interval: 10s
       timeout: 5s
       retries: 5
+
   cluster-init:
     image: citusdata/citus:11.2
     depends_on:
@@ -58,7 +59,7 @@ services:
     networks:
       - citus-network
     volumes:
-      - ./init-cluster.sh:/docker-entrypoint-initdb.d/init-cluster.sh
+      - ./init-scripts/init-cluster.sh:/docker-entrypoint-initdb.d/init-cluster.sh:ro
 
   web:
     build: .
@@ -78,14 +79,9 @@ services:
     command: >
       bash -c "/wait-for-db.sh citus-master && flask run --host 0.0.0.0 --port 5000"
 
-
 networks:
   citus-network:
 
 volumes:
   citus-master-data:
-<<<<<<< HEAD
   citus-worker-data:
-=======
-  citus-worker-data:
->>>>>>> c7284e6809bf2ac7c77af3f8031212de59303e6d
