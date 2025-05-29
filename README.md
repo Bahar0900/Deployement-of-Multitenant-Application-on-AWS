@@ -154,8 +154,9 @@ docker ps
 ```
 
 **Expected:** You should see two containers running:
-- `flask-citus-app-web-1`
-- `flask-citus-app-citus-master-1`
+- `multitenant-application-with-flask-and-citus-citus-worker-1`
+- `multitenant-application-with-flask-and-citus-web-1`
+- `multitenant-application-with-flask-and-citus-citus-master-1`
 
 ## ✅ 3. Verify Services
 
@@ -165,9 +166,10 @@ docker ps
 Run this to see active worker nodes:
 
 ```bash
-docker-compose exec citus_master psql -U postgres -d tenant_db -c "SELECT * FROM citus_get_active_worker_nodes();"
+docker exec -it multitenant-application-with-flask-and-citus-citus-master-1 psql -U postgres -c "SELECT * FROM citus_get_active_worker_nodes();
 ```
-
+**Expected:** active worker nodes:
+- `citus-worker |      5432`
 ---
 
 ## 🔬 4. Test API Endpoints with `curl`
@@ -250,16 +252,17 @@ curl -b cookies.txt http://localhost:5000/logout
 docker ps
 ```
 
-**Expected:** See containers like:
-- `flask-citus-app-web-1`
-- `flask-citus-app-citus-master-1`
+**Expected:** You should see two containers running:
+- `multitenant-application-with-flask-and-citus-citus-worker-1`
+- `multitenant-application-with-flask-and-citus-web-1`
+- `multitenant-application-with-flask-and-citus-citus-master-1`
 
 ---
 
 ## 📦 Step 2: Enter the Citus Master Container
 
 ```bash
-docker exec -it flask-citus-app-citus-master-1 bash
+docker exec -it multitenant-application-with-flask-and-citus-citus-master-1 bash
 ```
 
 ---
@@ -357,7 +360,7 @@ SELECT * FROM pg_stat_activity WHERE datname = 'your_database_name';
 ### 🔍 Test DB Connection
 
 ```bash
-docker-compose exec citus_master psql -U postgres -d tenant_db -c "SELECT 1"
+docker-compose exec citus-master psql -U postgres -d postgres -c "SELECT 1"
 ```
 
 If this fails, check logs or verify `DATABASE_URL` in `.env`.
@@ -365,8 +368,9 @@ If this fails, check logs or verify `DATABASE_URL` in `.env`.
 ### 📜 View Logs
 
 ```bash
-docker-compose logs citus_master
+docker-compose logs citus-master
 docker-compose logs web
+docker-compose logs citus-worker
 ```
 
 ### ♻️ Reset Docker Containers & Data
