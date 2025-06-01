@@ -88,12 +88,12 @@ The database consists of three main tables:
 ### Database layer workflow
 <img src="https://github.com/poridhioss/MultiTenant-Application-with-Flask-and-Citus/blob/c74f58253062c72b02809e0d8e3bd475ff66630b/images/citus%20updated_again.drawio.svg">
 
-  - The client sends an **HTTP POST** request to the Flask App (running on port `web:5000`) with the endpoint `/api/notes` and a payload containing the note content (`content`) and user ID (`userid`).
-  - The Flask App processes the request and sends an **SQL INSERT** statement to the database (Citrus-master5432) to insert the note into the `notes` table with the provided `content` and `userid`.
-  - The database (Citrus-master5432) executes the SQL INSERT operation, stores the note, and returns a **Query Result** containing the `note_id` of the newly created note to the Flask App.
-  - Simultaneously, the Flask App sends a message to the Citrus-worker via a message broker (e.g., RabbitMQ or Redis) with the route `insert_to_shared` and the payload containing the `note_id` and `userid`.
-  - The Citrus-worker processes the message, performs any additional tasks (e.g., sharing the note with other users or systems), and sends an **Acknowledgement** back to the Flask App to confirm the operation.
-  - The Flask App finalizes the request by returning a **JSON** response to the client, indicating the note has been created (`note_created`).
+- The client sends an HTTP POST request to the Flask App (running on port web:5000) with the endpoint `/api/notes` and a payload containing the note content (content: Test note).
+- The Flask App processes the request and sends an SQL INSERT statement to the Citus Coordinator (running on citus-master:5432, hosted on Docker Daemon on Host rpi-01) to insert the note into the `notes` table with the provided content and user ID (content, userId).
+- The Citus Coordinator, operating within the `citus-overlay-network`, executes the SQL INSERT operation and distributes the task to the Citus Workers (running on separate Docker Daemons on Hosts rpi-02 and rpi-03). The Coordinator routes the data to the appropriate shards based on the user ID.
+- The Citus Workers process the INSERT operation, store the note in their respective shards, and send an Acknowledgement back to the Citus Coordinator to confirm the operation’s success.
+- The Citus Coordinator compiles the results and returns a Query Result containing the `note_id` of the newly created note to the Flask App.
+- The Flask App finalizes the request by returning a JSON response to the client, indicating the note has been created (`note_created`).
 
 ### Deployment layer workflow
 <img src="https://github.com/poridhioss/MultiTenant-Application-with-Flask-and-Citus/blob/9984a80c0cf7b017b51366f2e5d33538deecf860/images/docker.drawio.svg">
