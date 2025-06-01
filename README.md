@@ -86,7 +86,7 @@ The database consists of three main tables:
   - The Flask Server sends the rendered webpage or redirect response back to the Web Browser for display.
   
 ### Database layer workflow
-<img src="https://github.com/poridhioss/MultiTenant-Application-with-Flask-and-Citus/blob/7232ecb1d0cce22f2cac0ea912147c6d50b26639/images/citus.drawio%20(1).svg">
+<img src="https://github.com/poridhioss/MultiTenant-Application-with-Flask-and-Citus/blob/c51502b2ea3061b9c48b1ebaaacb4bb37bd6c6e8/images/citus%20updated.drawio.svg">
 
   - The client sends an **HTTP POST** request to the Flask App (running on port `web:5000`) with the endpoint `/api/notes` and a payload containing the note content (`content`) and user ID (`userid`).
   - The Flask App processes the request and sends an **SQL INSERT** statement to the database (Citrus-master5432) to insert the note into the `notes` table with the provided `content` and `userid`.
