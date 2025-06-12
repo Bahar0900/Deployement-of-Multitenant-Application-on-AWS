@@ -1,0 +1,31 @@
+version: '3.8'
+
+services:
+  citus-worker:
+    image: citusdata/citus:11.2
+    environment:
+      POSTGRES_PASSWORD: mysecretpassword
+      POSTGRES_HOST_AUTH_METHOD: trust
+    volumes:
+      - ./config/postgresql.conf:/etc/postgresql/postgresql.conf
+      - ./config/pg_hba.conf:/etc/postgresql/pg_hba.conf
+      - citus-worker-data:/var/lib/postgresql/data
+      - ./worker-init:/docker-entrypoint-initdb.d
+    command: >
+      postgres 
+      -c config_file=/etc/postgresql/postgresql.conf
+      -c ssl=off
+      -c shared_preload_libraries=citus
+    networks:
+      - citus-network
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U postgres"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+volumes:
+  citus-worker-data:
+
+networks:
+  citus-network:
