@@ -5,8 +5,6 @@ services:
     build: .
     ports:
       - "5000:5000"
-    depends_on:
-      - db
     environment:
       FLASK_ENV: production
       DATABASE_URL: postgresql://postgres:mysecretpassword@<CITUS_MASTER_PRIVATE_IP>:5432/postgres?sslmode=disable
@@ -14,9 +12,7 @@ services:
       - .:/app
     networks:
       - citus-network
-    command: >
-      bash -c "/wait-for-db.sh <CITUS_MASTER_PRIVATE_IP> && flask run --host 0.0.0.0 --port 5000"
+    command: flask run --host 0.0.0.0 --port 5000
 
 networks:
   citus-network:
-
