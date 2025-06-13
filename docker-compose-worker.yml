@@ -11,6 +11,8 @@ services:
       - ./config/pg_hba.conf:/etc/postgresql/pg_hba.conf
       - citus-worker-data:/var/lib/postgresql/data
       - ./worker-init:/docker-entrypoint-initdb.d
+    ports:
+      - "5432:5432"
     command: >
       postgres 
       -c config_file=/etc/postgresql/postgresql.conf
