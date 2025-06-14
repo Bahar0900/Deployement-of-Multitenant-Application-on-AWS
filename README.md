@@ -662,7 +662,7 @@ Inside the Worker:
 
 ```bash
 git clone https://github.com/Bahar0900/Deployement-of-Multitenant-Application-on-AWS.git
-cd MultiTenant-Application-with-Flask-and-Citus
+cd Deployement-of-Multitenant-Application-on-AWS
 docker-compose -f docker-compose-worker.yml up -d
 ```
 
