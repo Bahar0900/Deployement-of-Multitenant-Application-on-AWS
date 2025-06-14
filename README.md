@@ -737,40 +737,32 @@ Expected: Flask application home page.
 **Register:**
 
 ```bash
-curl -X POST http://myapp-alb-922610679.ap-southeast-1.elb.amazonaws.com/register \
-  -H "Content-Type: application/x-www-form-urlencoded" \
-  -d "username=newuser&email=newuser@example.com&password=Password123&tenant_name=NewOrg"
+curl -X POST "http://myapp-alb-922610679.ap-southeast-1.elb.amazonaws.com/register" -H "Content-Type: application/x-www-form-urlencoded" -d "username=newuser&email=newuser@example.com&password=Password123&tenant_name=NewOrg"
 
 ```
 
 **Login:**
 
 ```bash
-curl -X POST http://myapp-alb-922610679.ap-southeast-1.elb.amazonaws.com/login \
-  -H "Content-Type: application/x-www-form-urlencoded" \
-  -c cookies.txt \
-  -d "email=newuser@example.com&password=Password123"
+curl -X POST "http://myapp-alb-922610679.ap-southeast-1.elb.amazonaws.com/login" -H "Content-Type: application/x-www-form-urlencoded" -c cookies.txt -d "email=newuser@example.com&password=Password123"
 ```
 
 **Create Note:**
 
 ```bash
-curl -X POST http://myapp-alb-922610679.ap-southeast-1.elb.amazonaws.com/notes \
-  -H "Content-Type: application/x-www-form-urlencoded" \
-  -b cookies.txt \
-  -d "content=This is my first note"
+curl -X POST "http://myapp-alb-922610679.ap-southeast-1.elb.amazonaws.com/notes" -H "Content-Type: application/x-www-form-urlencoded" -b cookies.txt -d "content=This is my first note"
 ```
 
 **Retrieve Notes:**
 
 ```bash
-curl -X GET http://myapp-alb-922610679.ap-southeast-1.elb.amazonaws.com/notes -b cookies.txt
+curl -X GET "http://myapp-alb-922610679.ap-southeast-1.elb.amazonaws.com/notes" -b "cookies.txt"
 ```
 
 **Logout:**
 
 ```bash
-curl -b cookies.txt http://myapp-alb-922610679.ap-southeast-1.elb.amazonaws.com/logout
+curl -b cookies.txt "http://myapp-alb-922610679.ap-southeast-1.elb.amazonaws.com/logout"
 ```
 
 ---
