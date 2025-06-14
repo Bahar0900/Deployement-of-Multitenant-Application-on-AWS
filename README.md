@@ -710,7 +710,7 @@ Inside Flask App Instance:
 
 ```bash
 git clone https://github.com/Bahar0900/Deployement-of-Multitenant-Application-on-AWS.git
-cd MultiTenant-Application-with-Flask-and-Citus
+cd Deployement-of-Multitenant-Application-on-AWS
 nano docker-compose-flask.yml   # Replace CITUS_MASTER_PRIVATE_IP
 nano config.py                  # Replace localhost with CITUS_MASTER_PRIVATE_IP
 docker-compose -f docker-compose-flask.yml up -d
