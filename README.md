@@ -680,7 +680,7 @@ Inside the Master:
 
 ```bash
 git clone https://github.com/Bahar0900/Deployement-of-Multitenant-Application-on-AWS.git
-cd MultiTenant-Application-with-Flask-and-Citus
+cd Deployement-of-Multitenant-Application-on-AWS
 nano docker-entrypoint-initdb.d/init-cluster.sh
 # Set Master and Worker private IPs
 chmod +x docker-entrypoint-initdb.d/init-cluster.sh
