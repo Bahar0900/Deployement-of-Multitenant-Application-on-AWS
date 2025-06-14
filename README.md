@@ -686,7 +686,16 @@ nano docker-entrypoint-initdb.d/init-cluster.sh
 chmod +x docker-entrypoint-initdb.d/init-cluster.sh
 docker-compose -f docker-compose-master.yml up -d
 ```
-
+Run:
+```bash
+   docker ps -a
+```
+You  will see:
+```bash
+   CONTAINER ID   IMAGE                  COMMAND                  CREATED          STATUS                     PORTS                                       NAMES
+6712f7631080   citusdata/citus:11.2   "/docker-entrypoint-…"   14 seconds ago   Exited (0) 6 seconds ago                                               deployement-of-multitenant-application-on-aws-cluster-init-1
+4a8a22ca59db   citusdata/citus:11.2   "docker-entrypoint.s…"   14 seconds ago   Up 13 seconds (healthy)    0.0.0.0:5432->5432/tcp, :::5432->5432/tcp   deployement-of-multitenant-application-on-aws-citus-master-1
+```
 ---
 
 ## 🐍 Step 6: Flask Application Setup
