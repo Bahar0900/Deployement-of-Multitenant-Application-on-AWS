@@ -130,7 +130,7 @@ pulumi version
 
 ```bash
 pulumi login
-pulumi new aws-python
+pulumi new aws-python --force
 ```
 
 - Accept default options  
@@ -148,7 +148,7 @@ import base64
 config = pulumi.Config()
 region = "ap-southeast-1"
 vpc_cidr = "10.0.0.0/16"
-your_ip = "Your IP"  #curl ifconfig.me to know your ip
+your_ip = "Your IP/32"  #curl ifconfig.me to know your ip
 instance_type = "t2.micro"
 ami_id = "ami-047126e50991d067b"  # Ubuntu 20.04 LTS for ap-southeast-1
 
@@ -574,7 +574,7 @@ pulumi.export("application_url", pulumi.Output.concat("http://", alb.dns_name))
 ssh-keygen -t rsa -b 2048 -f app-key-pair
 cat app-key-pair.pub
 ```
-Update the Your iP variable with you ip.You can get it by (ifconfig.me)
+Update the Your iP variable with you ip.You can get it by (curl ifconfig.me)
 Update the `public_key_content` variable in your Pulumi `main.py` resource with the copied value.
 
 ### Step 6: Install Dependencies
@@ -620,12 +620,36 @@ Verify outputs:
 pulumi stack output
 ```
 
-Example:
+Expected Output:
 
 ```
-OUTPUT              VALUE
-key_pair_name       app-key-pair
-web_public_ip       18.138.254.251
+OUTPUT                          VALUE
+    alb_arn                         arn:aws:elasticloadbalancing:ap-southeast-1:105714714787:loadbalancer/app/myapp-alb/ad70df228518eb6e
+    alb_dns_name                    myapp-alb-1359630259.ap-southeast-1.elb.amazonaws.com
+    alb_listener_arn                arn:aws:elasticloadbalancing:ap-southeast-1:105714714787:listener/app/myapp-alb/ad70df228518eb6e/4034baab9517df56
+    application_url                 http://myapp-alb-1359630259.ap-southeast-1.elb.amazonaws.com
+    bastion_instance_id             i-02f803b4ce9e65f48
+    bastion_public_ip               13.229.119.111
+    bastion_security_group_id       sg-0678954a433b9400c
+    citus_master_instance_id        i-002b892e5df295c58
+    citus_master_security_group_id  sg-08c5e00a28650020b
+    citus_worker_instance_id        i-03f7910f71ba016f2
+    citus_worker_security_group_id  sg-051dd196043c68b5c
+    flask_instance_id               i-00ef5ea2018595756
+    flask_security_group_id         sg-093da4f3f4cb166c2
+    internet_gateway_id             igw-0d3bfa1a9342cc8fa
+    key_pair_name                   app-key-pair
+    lb_security_group_id            sg-013d803eb885c93f8
+    nat_gateway_id                  nat-0d52988298ff758e1
+    private_route_table_id          rtb-0349426a278c8af1c
+    private_subnet_a_id             subnet-0cfac514b5acd4cc9
+    private_subnet_b_id             subnet-07af77cc2d30eb31a
+    public_route_table_id           rtb-0cbf11cc4a4289752
+    public_subnet_a_id              subnet-08c1b9c180583ba29
+    public_subnet_b_id              subnet-0f1a60fa314233051
+    ssh_command                     ssh -i /root/code/pulumi/app-key-pair ubuntu@13.229.119.111
+    target_group_arn                arn:aws:elasticloadbalancing:ap-southeast-1:105714714787:targetgroup/flasktargetgroup/6ee2bbafe380bbe5
+    vpc_id                          vpc-0a0fd69d3abb2dc24
 ```
 
 ---
@@ -669,10 +693,12 @@ ssh -i ~/app-key-pair ubuntu@<citus_worker_private_ip>
 
 Inside Worker Instance:
 
+First check  `dcoker --version ` and `docker-compose --version`.If not present then install by runnint commands of the user_data_script of main.py file.
+
 ```bash
 git clone https://github.com/Bahar0900/Deployement-of-Multitenant-Application-on-AWS.git
 cd Deployement-of-Multitenant-Application-on-AWS
-docker-compose -f docker-compose-worker.yml up -d
+sudo docker-compose -f docker-compose-worker.yml up -d
 ```
 
 ### Step 3: Citus Master Setup
@@ -684,26 +710,26 @@ ssh -i ~/app-key-pair ubuntu@<citus_master_private_ip>
 ```
 
 Inside Master Instance:
+First check  `dcoker --version ` and `docker-compose --version`.If not present then install by runnint commands of the user_data_script of main.py file.
 
 ```bash
 git clone https://github.com/Bahar0900/Deployement-of-Multitenant-Application-on-AWS.git
 cd Deployement-of-Multitenant-Application-on-AWS
 nano docker-entrypoint-initdb.d/init-cluster.sh  # Edit IPs
 chmod +x docker-entrypoint-initdb.d/init-cluster.sh
-docker-compose -f docker-compose-master.yml up -d
+sudo docker-compose -f docker-compose-master.yml up -d
 ```
 
 Verify:
 
 ```bash
-docker ps -a
+sudo docker ps 
 ```
 
 Expected:
 
 ```
-CONTAINER ID   IMAGE                  STATUS                PORTS
-xxxxx          citusdata/citus:11.2   Up (healthy)          5432->5432/tcp
+9fcc4a2038c0   citusdata/citus:11.2   "docker-entrypoint.s…"   12 seconds ago   Up 11 seconds (healthy)   0.0.0.0:5432->5432/tcp, :::5432->5432/tcp   deployement-of-multitenant-application-on-aws-citus-master-1
 ```
 
 ### Step 4: Flask Application Setup
@@ -715,15 +741,25 @@ ssh -i ~/app-key-pair ubuntu@<flask_app_private_ip>
 ```
 
 Inside Flask Instance:
+First check  `dcoker --version ` and `docker-compose --version`.If not present then install by runnint commands of the user_data_script of main.py file.
 
 ```bash
 git clone https://github.com/Bahar0900/Deployement-of-Multitenant-Application-on-AWS.git
 cd Deployement-of-Multitenant-Application-on-AWS
 nano docker-compose-flask.yml  # Replace CITUS_MASTER_PRIVATE_IP
 nano config.py                 # Replace localhost with CITUS_MASTER_PRIVATE_IP
-docker-compose -f docker-compose-flask.yml up -d
+sudo docker-compose -f docker-compose-flask.yml up -d
 ```
 
+Run:
+```
+sduo docker ps
+```
+Expected Output:
+```
+CONTAINER ID   IMAGE                                               COMMAND                  CREATED         STATUS         PORTS                                       NAMES
+dc11050ffa01   deployement-of-multitenant-application-on-aws-web   "flask run --host 0.…"   6 seconds ago   Up 6 seconds   0.0.0.0:5000->5000/tcp, :::5000->5000/tcp   deployement-of-multitenant-application-on-aws-web-1
+```
 ---
 
 ## 🔍 Final Testing
