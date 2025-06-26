@@ -598,11 +598,20 @@ pip install -r requirements.txt
 pulumi up --yes
 ```
 
+Expected Output:
+![Image note found](https://github.com/poridhioss/Deployement-of-Multitenant-Application-on-AWS/blob/f07757cb2b5810dafce76986314b7894ef127b47/images/citus%20updated_again.drawio.svg)
+![Image note found](https://github.com/poridhioss/Deployement-of-Multitenant-Application-on-AWS/blob/f07757cb2b5810dafce76986314b7894ef127b47/images/citus%20updated_again.drawio.svg)
+![Image note found](https://github.com/poridhioss/Deployement-of-Multitenant-Application-on-AWS/blob/f07757cb2b5810dafce76986314b7894ef127b47/images/citus%20updated_again.drawio.svg)
+![Image note found](https://github.com/poridhioss/Deployement-of-Multitenant-Application-on-AWS/blob/f07757cb2b5810dafce76986314b7894ef127b47/images/citus%20updated_again.drawio.svg)
+![Image note found](https://github.com/poridhioss/Deployement-of-Multitenant-Application-on-AWS/blob/f07757cb2b5810dafce76986314b7894ef127b47/images/citus%20updated_again.drawio.svg)
+
 Pulumi will:
 
 - Create networking and compute resources  
 - Set up security groups  
 - Launch EC2 instances with Docker  
+
+
 
 Verify outputs:
 
