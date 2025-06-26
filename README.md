@@ -31,6 +31,8 @@ The system is a multi-tier distributed application with the following components
 
 ## 🗺️ AWS Architecture Design
 
+![Image note found](image_url_or_path)
+
 ### VPC Details
 
 | Component        | CIDR Block     | Availability Zone | Notes                         |
