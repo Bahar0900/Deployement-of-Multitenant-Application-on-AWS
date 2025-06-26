@@ -1,4 +1,4 @@
-# 🚀 Deployment Guide: Multi-Tenant Application on AWS with Flask and Citus
+# 🚀 Multi-Tenant Application on AWS with Flask and Citus
 
 A comprehensive step-by-step guide to deploy a scalable, distributed multi-tenant application using **Flask** and **Citus (PostgreSQL)** on **AWS** infrastructure.
 
