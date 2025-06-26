@@ -599,11 +599,11 @@ pulumi up --yes
 ```
 
 Expected Output:
-![Image note found](https://github.com/poridhioss/Deployement-of-Multitenant-Application-on-AWS/blob/f07757cb2b5810dafce76986314b7894ef127b47/images/citus%20updated_again.drawio.svg)
-![Image note found](https://github.com/poridhioss/Deployement-of-Multitenant-Application-on-AWS/blob/f07757cb2b5810dafce76986314b7894ef127b47/images/citus%20updated_again.drawio.svg)
-![Image note found](https://github.com/poridhioss/Deployement-of-Multitenant-Application-on-AWS/blob/f07757cb2b5810dafce76986314b7894ef127b47/images/citus%20updated_again.drawio.svg)
-![Image note found](https://github.com/poridhioss/Deployement-of-Multitenant-Application-on-AWS/blob/f07757cb2b5810dafce76986314b7894ef127b47/images/citus%20updated_again.drawio.svg)
-![Image note found](https://github.com/poridhioss/Deployement-of-Multitenant-Application-on-AWS/blob/f07757cb2b5810dafce76986314b7894ef127b47/images/citus%20updated_again.drawio.svg)
+![Image note found](https://github.com/poridhioss/Deployement-of-Multitenant-Application-on-AWS/blob/bdafbdc69bdc505082f68fb2e2484d53b66ed1df/images/pulumipic1.JPG)
+![Image note found](https://github.com/poridhioss/Deployement-of-Multitenant-Application-on-AWS/blob/bdafbdc69bdc505082f68fb2e2484d53b66ed1df/images/pulumipic2.JPG)
+![Image note found](https://github.com/poridhioss/Deployement-of-Multitenant-Application-on-AWS/blob/bdafbdc69bdc505082f68fb2e2484d53b66ed1df/images/pulumipic3.JPG)
+![Image note found](https://github.com/poridhioss/Deployement-of-Multitenant-Application-on-AWS/blob/bdafbdc69bdc505082f68fb2e2484d53b66ed1df/images/pulumipic4.JPG)
+![Image note found](https://github.com/poridhioss/Deployement-of-Multitenant-Application-on-AWS/blob/bdafbdc69bdc505082f68fb2e2484d53b66ed1df/images/pulumipic5.JPG)
 
 Pulumi will:
 
