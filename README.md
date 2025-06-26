@@ -31,7 +31,7 @@ The system is a multi-tier distributed application with the following components
 
 ## 🗺️ AWS Architecture Design
 
-![Image note found](image_url_or_path)
+![Image note found](https://github.com/poridhioss/Deployement-of-Multitenant-Application-on-AWS/blob/26aee9c9e9d9eed749122df86e57493e36931787/images/awsfinannnaalll.drawio.svg)
 
 ### VPC Details
 
