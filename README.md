@@ -18,6 +18,7 @@ This guide covers the following steps:
 ---
 
 ## 🧩 System Overview
+![Image note found](https://github.com/poridhioss/Deployement-of-Multitenant-Application-on-AWS/blob/26aee9c9e9d9eed749122df86e57493e36931787/images/awsfinannnaalll.drawio.svg)
 
 The system is a multi-tier distributed application with the following components:
 
@@ -41,7 +42,7 @@ The system is a multi-tier distributed application with the following components
 | Public Subnet B  | 10.0.2.0/24    | ap-southeast-1b   | Bastion Host                  |
 | Private Subnet A | 10.0.3.0/24    | ap-southeast-1a   | Flask App                     |
 | Private Subnet B | 10.0.4.0/24    | ap-southeast-1b   | Citus Master                  |
-| Private Subnet C | 10.0.5.0/24    | ap-southeast-1c   | Citus Worker                  |
+| Private Subnet C | 10.0.5.0/24    | ap-southeast-1b   | Citus Worker                  |
 
 - Internet Gateway: Attached to VPC  
 - NAT Gateway: Located in Public Subnet A  
